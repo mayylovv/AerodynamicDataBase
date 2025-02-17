@@ -1,4 +1,4 @@
-package com.example.demo.util;
+package org.example.demo.util;
 
 public final class Constant {
     public static final double GRAVITY_CONSTANT = 6.67430e-11;

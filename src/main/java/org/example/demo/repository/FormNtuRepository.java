@@ -1,6 +1,6 @@
-package com.example.demo.repository;
+package org.example.demo.repository;
 
-import com.example.demo.entity.FormNtu;
+import org.example.demo.entity.FormNtu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

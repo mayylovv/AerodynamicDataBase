@@ -1,6 +1,5 @@
-package com.example.demo.entity;
+package org.example.demo.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,18 +12,20 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Getter
 @Setter
-@Table(name = "atmosphere")
+@Table(schema = "aero_database", name = "cubesat_size")
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class Atmosphere {
+public class CubesatSize {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-
-    @Column(name = "height_km")
-    int heightKm;
-
-    @Column(name = "density")
-    double density;
+    String name;
+    double length;
+    double width;
+    double height;
+    double xMass;
+    double yMass;
+    double zMass;
+    double mass;
 
 }

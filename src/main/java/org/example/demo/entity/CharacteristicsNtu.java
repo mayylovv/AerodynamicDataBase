@@ -19,7 +19,7 @@ public class CharacteristicsNtu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-    String typeForm;
+    int formId;
     double radius;
     double length;
     double thickness;

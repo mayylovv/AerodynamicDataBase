@@ -22,16 +22,19 @@ public class AerodynamicCharacteristics {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     double alfa;
-    int heightKm;
-    double radius;
-    double length;
+    int cubesatSizeId;
+    int atmosphereId;
+    int sizeNtuId;
     double forceX;
     double momentX;
     double coefficientX;
     double forceY;
     double momentY;
     double coefficientY;
+    double velocity_head;
     Timestamp dateOfCalculation;
+    double speed;
+    double minSpeed;
 
 }
 

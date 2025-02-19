@@ -23,9 +23,9 @@ public class CubesatNtuApplication extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+		Scene scene = new Scene(fxmlLoader.load(), 750, 400);
 		stage.setScene(scene);
-		stage.setTitle("JavaFX + Spring Boot App");
+		stage.setTitle("AerospaceDatabase");
 		stage.show();
 	}
 

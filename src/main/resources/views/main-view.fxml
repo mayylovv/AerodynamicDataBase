@@ -1,8 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.demo.Controller">
-    <Label fx:id="helloLabel" text="Hello!" />
-</VBox>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="561.0" prefWidth="874.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.Controller">
+   <children>
+      <ChoiceBox fx:id="flightHeightChoiceBox" layoutX="20.0" layoutY="455.0" prefHeight="25.0" prefWidth="192.0" />
+      <Label layoutX="18.0" layoutY="432.0" text="Выберите высоту полета из списка" />
+      <Label layoutX="25.0" layoutY="51.0" text="Характеристики кубсата:">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+      <TextField fx:id="nameField" layoutX="100.0" layoutY="83.0" />
+      <Label layoutX="25.0" layoutY="83.0" text="Имя" />
+      <Label layoutX="25.0" layoutY="113.0" text="Длина" />
+      <TextField fx:id="lengthField" layoutX="100.0" layoutY="113.0" />
+      <TextField fx:id="widthField" layoutX="100.0" layoutY="143.0" />
+      <TextField fx:id="heightField" layoutX="100.0" layoutY="173.0" />
+      <Label layoutX="25.0" layoutY="143.0" text="Ширина" />
+      <Label layoutX="25.0" layoutY="173.0" text="Высота" />
+      <Label layoutX="25.0" layoutY="203.0" text="X_mass" />
+      <Label layoutX="25.0" layoutY="233.0" text="Y_mass" />
+      <Label layoutX="25.0" layoutY="263.0" text="Z_mass" />
+      <Label layoutX="25.0" layoutY="293.0" text="Масса" />
+      <TextField layoutX="100.0" layoutY="203.0" fx:id="xMassField" />
+      <TextField fx:id="yMassField" layoutX="100.0" layoutY="233.0" />
+      <TextField fx:id="zMassField" layoutX="100.0" layoutY="263.0" />
+      <TextField fx:id="massField" layoutX="100.0" layoutY="293.0" />
+      <Button fx:id="saveCubeSatButton" layoutX="95.0" layoutY="324.0" mnemonicParsing="false" onAction="#saveCubeSat" text="Сохранить" />
+      <ChoiceBox fx:id="shapeChoiceBox" layoutX="270.0" layoutY="79.0" prefWidth="150.0" />
+      <Label layoutX="270.0" layoutY="50.0" text="Выберите форму надувной оболочки" />
+      <Label layoutX="270.0" layoutY="14.0" text="Характеристики надувной оболочки">
+         <font>
+            <Font size="13.0" />
+         </font></Label>
+      <Label layoutX="270.0" layoutY="110.0" text="Радиус" />
+      <Label layoutX="270.0" layoutY="140.0" text="Длина" />
+      <Label layoutX="270.0" layoutY="170.0" text="Толщина" />
+      <TextField fx:id="radiusField" layoutX="340.0" layoutY="110.0" />
+      <TextField fx:id="shapeLengthField" layoutX="340.0" layoutY="140.0" />
+      <TextField fx:id="thicknessField" layoutX="340.0" layoutY="170.0" />
+      <Label layoutX="271.0" layoutY="214.0" text="Выберите материал оболочки" />
+      <ChoiceBox fx:id="materialChoiceBox" layoutX="271.0" layoutY="232.0" prefWidth="150.0" />
+      <Label layoutX="559.0" layoutY="212.0" />
+      <Label layoutX="270.0" layoutY="328.0" text="Название" />
+      <Label layoutX="270.0" layoutY="358.0" text="Плотность" />
+      <TextField fx:id="newMaterialNameField" layoutX="340.0" layoutY="328.0" />
+      <TextField fx:id="newMaterialDensityField" layoutX="340.0" layoutY="358.0" />
+      <Button fx:id="saveMaterialButton" layoutX="350.0" layoutY="388.0" mnemonicParsing="false" onAction="#saveMaterial" text="Сохранить" />
+      <Button fx:id="saveShapeButton" layoutX="351.0" layoutY="262.0" mnemonicParsing="false" onAction="#saveShape" text="Сохранить" />
+      <Label layoutX="230.0" layoutY="433.0" text="Скорость космического аппарата" />
+      <Label layoutX="82.0" layoutY="486.0" text="Угол аттаки" />
+      <TextField fx:id="spacecraftSpeedField" layoutX="250.0" layoutY="453.0" />
+      <TextField fx:id="attackAngleField" layoutX="40.0" layoutY="510.0" />
+      <Button fx:id="saveFlightParamsButton" layoutX="283.0" layoutY="510.0" mnemonicParsing="false" onAction="#saveFlightParams" text="Сохранить" />
+      <Button fx:id="calculateButton" layoutX="642.0" layoutY="27.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="109.0" text="Провести расчет" onAction="#calculate" />
+      <Separator layoutX="255.0" layoutY="15.0" orientation="VERTICAL" prefHeight="402.0" prefWidth="7.0" />
+      <Separator layoutX="517.0" layoutY="17.0" orientation="VERTICAL" prefHeight="539.0" prefWidth="7.0" />
+      <TextArea fx:id="resultTextArea" layoutX="538.0" layoutY="86.0" prefHeight="451.0" prefWidth="317.0" />
+      <Separator layoutX="16.0" layoutY="419.0" prefHeight="8.0" prefWidth="490.0" />
+   </children>
+</Pane>

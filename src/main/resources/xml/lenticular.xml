@@ -1,0 +1,15 @@
+<form name="ЧЕЧЕВИЦА">
+    <area>4 * PI * pow(radius, 2) * (radius - sqrt(pow(radius, 2) - pow(length, 2) / 4))</area>
+    <midsectionArea>PI * pow(sqrt(pow(radius, 2) + pow(length, 2) / 4, 2)</midsectionArea>
+    <centrePressure>
+        <x>cubesatSize.length + radius - length / 2</x>
+        <y>cubesatSize.width / 2</y>
+        <z>cubesatSize.height / 2</z>
+    </centrePressure>
+    <centreMass>
+        <x>cubesatSize.length + radius - length / 2</x>
+        <y>cubesatSize.width / 2</y>
+        <z>cubesatSize.height / 2</z>
+    </centreMass>
+    <shellNtu>4 * PI * radius * radius * (radius - sqrt(pow(radius, 2) - pow(length, 2) / 4)</shellNtu>
+</form>

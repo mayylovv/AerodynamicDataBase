@@ -27,10 +27,11 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok")
 	implementation("org.openjfx:javafx-controls:17")
 	implementation("org.openjfx:javafx-fxml:17")
+	implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.0") // API JAXB
+	implementation("org.glassfish.jaxb:jaxb-runtime:4.0.4") // Runtime для JAXB
+	implementation("net.objecthunter:exp4j:0.4.8")
 }
 
 application {
 	mainClass.set("org.example.demo.CubesatNtuApplication")
 }
-
-

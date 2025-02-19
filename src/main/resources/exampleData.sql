@@ -1,4 +1,4 @@
-INSERT INTO atmosphere (height_km, density)
+INSERT INTO aero_database.atmosphere (height_km, density)
 VALUES (150,  2.003E-9),
        (200,  2.519E-10),
        (250,  6.057E-11),

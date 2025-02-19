@@ -1,0 +1,15 @@
+<form name="ШАР">
+    <area>radius * radius * PI</area>
+    <midsectionArea>radius * radius * PI</midsectionArea>
+    <centrePressure>
+        <x>cubesatSize.length + radius</x>
+        <y>cubesatSize.width / 2</y>
+        <z>cubesatSize.height / 2</z>
+    </centrePressure>
+    <centreMass>
+        <x>cubesatSize.length + radius</x>
+        <y>cubesatSize.width / 2</y>
+        <z>cubesatSize.height / 2</z>
+    </centreMass>
+    <shellNtu>4 * PI * radius * radius</shellNtu>
+</form>

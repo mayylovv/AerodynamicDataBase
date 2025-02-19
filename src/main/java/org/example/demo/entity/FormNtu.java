@@ -20,5 +20,6 @@ public class FormNtu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     String name;
+    String fileName;
 
 }

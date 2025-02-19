@@ -2,6 +2,8 @@ package org.example.demo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.demo.entity.Atmosphere;
+import org.example.demo.entity.CharacteristicsNtu;
+import org.example.demo.entity.CubesatSize;
 import org.example.demo.exception.NotFoundException;
 import org.example.demo.repository.AtmosphereRepository;
 import org.example.demo.util.Constant;
@@ -19,48 +21,43 @@ public class MainCalculationService {
     private final SpeedCalculator speedCalculator;
     private final AreaCalculator areaCalculator;
 
-    public double calculateForceX(int heightKm, double radius, double length, double alfa, String formName, double overSpeed) {
+    public double calculateForceX(int heightKm, double radius, double length, double alfa, String formName, double speed) {
         double density = getDensity(heightKm);
-        double speed = calculateSpeed(heightKm, overSpeed);
         double coefficientX = calculateCoefficientX(radius, length, alfa, formName);
         double area = calculateArea(formName, radius, length, alfa);
 
         return 0.5 * density * pow(speed,2) * coefficientX * area;
     }
 
-    public double calculateMomentX(int heightKm, double radius, double alfa, double length, double overSpeed, String formName, int cubesatId, int charNtuId) {
+    public double calculateMomentX(int heightKm, double radius, double alfa, double length, double speed, String formName, CubesatSize cubesatSize, CharacteristicsNtu charNtu) {
         double coefficientX = calculateCoefficientX(radius, length, alfa, formName);
         double density = getDensity(heightKm);
-        double speed = calculateSpeed(heightKm, overSpeed);
         double midsectionArea = calculateMidsectionArea(radius, formName, length);
-        double levelArm = calculateLevelArm(formName, radius, length, cubesatId, charNtuId);
+        double levelArm = calculateLevelArm(formName, radius, length, cubesatSize, charNtu);
 
         return - 0.5 * coefficientX * density * pow(speed, 2) * midsectionArea * levelArm;
     }
 
-    public double calculateForceY(int heightKm, double radius, double length, double alfa, String formName, double overSpeed) {
+    public double calculateForceY(int heightKm, double radius, double length, double alfa, String formName, double speed) {
         double density = getDensity(heightKm);
-        double speed = calculateSpeed(heightKm, overSpeed);
         double coefficientY = calculateCoefficientY(alfa);
         double area = calculateArea(formName, radius, length, alfa);
 
         return 0.5 * density * pow(speed, 2) * coefficientY * area;
     }
 
-    public double calculateMomentY(int heightKm, double radius, double alfa, double length, double overSpeed, String formName, int cubesatId, int charNtuId) {
+    public double calculateMomentY(int heightKm, double radius, double alfa, double length, double speed, String formName, CubesatSize cubesatSize, CharacteristicsNtu charNtu) {
         double coefficientY = calculateCoefficientY(alfa);
         double density = getDensity(heightKm);
-        double speed = calculateSpeed(heightKm, overSpeed);
         double midsectionArea = calculateMidsectionArea(radius, formName, length);
-        double levelArm = calculateLevelArm(formName, radius, length, cubesatId, charNtuId);
+        double levelArm = calculateLevelArm(formName, radius, length, cubesatSize, charNtu);
 
         return - 0.5 * coefficientY * density * pow(speed, 2) * midsectionArea * levelArm;
     }
 
-    public double calculateVelocityHead(int heightKm, double overSpeed) {
+    public double calculateVelocityHead(int heightKm, double speed) {
         // скоростной напор
         double density = getDensity(heightKm);
-        double speed = calculateSpeed(heightKm, overSpeed);
         return 0.5 * density * pow(speed, 2);
     }
 
@@ -86,8 +83,8 @@ public class MainCalculationService {
         return speedCalculator.calculateSpeed(heightKm, overSpeed);
     }
 
-    public double calculateLevelArm(String formName, double radius, double length, int cubesatId, int charNtuId) {
-        return areaCalculator.calculateLevelArm(formName, radius, length, cubesatId, charNtuId);
+    public double calculateLevelArm(String formName, double radius, double length, CubesatSize cubesatSize, CharacteristicsNtu charNtu) {
+        return areaCalculator.calculateLevelArm(formName, radius, length, cubesatSize, charNtu);
     }
 
     public double calculateArea(String name, double radius, double length, double alfa) {

@@ -1,0 +1,15 @@
+<form name="КОНУС">
+    <formuarea>PI * radius * (radius + sqrt(pow(length, 2) + pow(radius, 2)))</formuarea>
+    <midsectionArea>PI * pow(radius, 2)</midsectionArea>
+    <centrePressure>
+        <x>cubesatSize.length + length / 3</x>
+        <y>cubesatSize.width / 2</y>
+        <z>cubesatSize.height / 2</z>
+    </centrePressure>
+    <centreMass>
+        <x>cubesatSize.length + length / 4</x>
+        <y>cubesatSize.width / 2</y>
+        <z>cubesatSize.height / 2</z>
+    </centreMass>
+    <shellNtu>PI * radius * sqrt(pow(radius, 2) + pow(length, 2)) + PI * pow(radius, 2)</shellNtu>
+</form>

@@ -50,9 +50,9 @@ public class AreaCalculator {
     }
 
     private double[] calculateCentrePressure(String formName, double radius, double length, CubesatSize cubesatSize) {
-        String formulaX = FormulaLoader.loadFormula(formName, "centrePressure/x");
-        String formulaY = FormulaLoader.loadFormula(formName, "centrePressure/y");
-        String formulaZ = FormulaLoader.loadFormula(formName, "centrePressure/z");
+        String formulaX = FormulaLoader.loadFormula(formName, "centrePressureX");
+        String formulaY = FormulaLoader.loadFormula(formName, "centrePressureY");
+        String formulaZ = FormulaLoader.loadFormula(formName, "centrePressureZ");
 
         double x = evaluateFormula(formulaX, radius, length, cubesatSize.getLength(), 0, 0);
         double y = evaluateFormula(formulaY, radius, length, 0, cubesatSize.getWidth(), 0);
@@ -64,9 +64,9 @@ public class AreaCalculator {
     private double[] calculateCentreMass(String formName, double radius, double length, CubesatSize cubesatSize, CharacteristicsNtu characteristicsNtu) {
         MaterialInfoEntity materialOfNtu = materialInfoRepository.findById(characteristicsNtu.getMaterialId()).get();
 
-        String formulaX = FormulaLoader.loadFormula(formName, "centreMass/x");
-        String formulaY = FormulaLoader.loadFormula(formName, "centreMass/y");
-        String formulaZ = FormulaLoader.loadFormula(formName, "centreMass/z");
+        String formulaX = FormulaLoader.loadFormula(formName, "centreMassX");
+        String formulaY = FormulaLoader.loadFormula(formName, "centreMassY");
+        String formulaZ = FormulaLoader.loadFormula(formName, "centreMassZ");
 
         double x = evaluateFormula(formulaX, radius, length, cubesatSize.getLength(), 0, 0);
         double y = evaluateFormula(formulaY, radius, length, 0, cubesatSize.getWidth(), 0);
@@ -94,8 +94,6 @@ public class AreaCalculator {
                 .setVariable("cubesatSize.length", cubesatSizeLength)
                 .setVariable("cubesatSize.width", cubesatSizeWidth)
                 .setVariable("cubesatSize.height", cubesatSizeHeight);
-
         return expression.evaluate();
     }
-
 }

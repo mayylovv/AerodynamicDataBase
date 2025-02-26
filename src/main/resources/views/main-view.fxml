@@ -2,64 +2,193 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="561.0" prefWidth="874.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.Controller">
-   <children>
-      <ChoiceBox fx:id="flightHeightChoiceBox" layoutX="20.0" layoutY="455.0" prefHeight="25.0" prefWidth="192.0" />
-      <Label layoutX="18.0" layoutY="432.0" text="Выберите высоту полета из списка" />
-      <Label layoutX="25.0" layoutY="51.0" text="Характеристики кубсата:">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <TextField fx:id="nameField" layoutX="100.0" layoutY="83.0" />
-      <Label layoutX="25.0" layoutY="83.0" text="Имя" />
-      <Label layoutX="25.0" layoutY="113.0" text="Длина" />
-      <TextField fx:id="lengthField" layoutX="100.0" layoutY="113.0" />
-      <TextField fx:id="widthField" layoutX="100.0" layoutY="143.0" />
-      <TextField fx:id="heightField" layoutX="100.0" layoutY="173.0" />
-      <Label layoutX="25.0" layoutY="143.0" text="Ширина" />
-      <Label layoutX="25.0" layoutY="173.0" text="Высота" />
-      <Label layoutX="25.0" layoutY="203.0" text="X_mass" />
-      <Label layoutX="25.0" layoutY="233.0" text="Y_mass" />
-      <Label layoutX="25.0" layoutY="263.0" text="Z_mass" />
-      <Label layoutX="25.0" layoutY="293.0" text="Масса" />
-      <TextField layoutX="100.0" layoutY="203.0" fx:id="xMassField" />
-      <TextField fx:id="yMassField" layoutX="100.0" layoutY="233.0" />
-      <TextField fx:id="zMassField" layoutX="100.0" layoutY="263.0" />
-      <TextField fx:id="massField" layoutX="100.0" layoutY="293.0" />
-      <Button fx:id="saveCubeSatButton" layoutX="95.0" layoutY="324.0" mnemonicParsing="false" onAction="#saveCubeSat" text="Сохранить" />
-      <ChoiceBox fx:id="shapeChoiceBox" layoutX="270.0" layoutY="79.0" prefWidth="150.0" />
-      <Label layoutX="270.0" layoutY="50.0" text="Выберите форму надувной оболочки" />
-      <Label layoutX="270.0" layoutY="14.0" text="Характеристики надувной оболочки">
-         <font>
-            <Font size="13.0" />
-         </font></Label>
-      <Label layoutX="270.0" layoutY="110.0" text="Радиус" />
-      <Label layoutX="270.0" layoutY="140.0" text="Длина" />
-      <Label layoutX="270.0" layoutY="170.0" text="Толщина" />
-      <TextField fx:id="radiusField" layoutX="340.0" layoutY="110.0" />
-      <TextField fx:id="shapeLengthField" layoutX="340.0" layoutY="140.0" />
-      <TextField fx:id="thicknessField" layoutX="340.0" layoutY="170.0" />
-      <Label layoutX="271.0" layoutY="214.0" text="Выберите материал оболочки" />
-      <ChoiceBox fx:id="materialChoiceBox" layoutX="271.0" layoutY="232.0" prefWidth="150.0" />
-      <Label layoutX="559.0" layoutY="212.0" />
-      <Label layoutX="270.0" layoutY="328.0" text="Название" />
-      <Label layoutX="270.0" layoutY="358.0" text="Плотность" />
-      <TextField fx:id="newMaterialNameField" layoutX="340.0" layoutY="328.0" />
-      <TextField fx:id="newMaterialDensityField" layoutX="340.0" layoutY="358.0" />
-      <Button fx:id="saveMaterialButton" layoutX="350.0" layoutY="388.0" mnemonicParsing="false" onAction="#saveMaterial" text="Сохранить" />
-      <Button fx:id="saveShapeButton" layoutX="351.0" layoutY="262.0" mnemonicParsing="false" onAction="#saveShape" text="Сохранить" />
-      <Label layoutX="230.0" layoutY="433.0" text="Скорость космического аппарата" />
-      <Label layoutX="82.0" layoutY="486.0" text="Угол аттаки" />
-      <TextField fx:id="spacecraftSpeedField" layoutX="250.0" layoutY="453.0" />
-      <TextField fx:id="attackAngleField" layoutX="40.0" layoutY="510.0" />
-      <Button fx:id="saveFlightParamsButton" layoutX="283.0" layoutY="510.0" mnemonicParsing="false" onAction="#saveFlightParams" text="Сохранить" />
-      <Button fx:id="calculateButton" layoutX="642.0" layoutY="27.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="109.0" text="Провести расчет" onAction="#calculate" />
-      <Separator layoutX="255.0" layoutY="15.0" orientation="VERTICAL" prefHeight="402.0" prefWidth="7.0" />
-      <Separator layoutX="517.0" layoutY="17.0" orientation="VERTICAL" prefHeight="539.0" prefWidth="7.0" />
-      <TextArea fx:id="resultTextArea" layoutX="538.0" layoutY="86.0" prefHeight="451.0" prefWidth="317.0" />
-      <Separator layoutX="16.0" layoutY="419.0" prefHeight="8.0" prefWidth="490.0" />
-   </children>
-</Pane>
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="1100.0" prefHeight="1600.0" prefWidth="1241.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.Controller">
+    <Pane prefHeight="15803.0" prefWidth="1214.0">
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="746.0" layoutX="716.0" layoutY="477.0" stroke="BLACK" strokeType="INSIDE" width="486.0" />
+        <Label layoutX="917.0" layoutY="764.0" />
+        <Button fx:id="calculateButton" layoutX="75.0" layoutY="1476.0" mnemonicParsing="false" onAction="#calculate" prefHeight="46.0" prefWidth="109.0" text="Провести расчет" />
+        <TextArea fx:id="resultTextArea" layoutX="44.0" layoutY="1258.0" minHeight="40.0" minWidth="40.0" prefHeight="191.0" prefWidth="400.0" />
+        <Label layoutX="44.0" layoutY="14.0" text="Характеристики космического аппарата">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+        <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="44.0" layoutY="100.0" prefHeight="337.0" prefWidth="635.0">
+            <TableView fx:id="cubesatTableView" layoutX="44.0" prefHeight="204.0" prefWidth="634.0">
+                <columns>
+                    <TableColumn fx:id="nameColumn" text="Название" />
+                    <TableColumn fx:id="lengthColumn" text="Длина, м" />
+                    <TableColumn fx:id="widthColumn" text="Ширина, м " />
+                    <TableColumn fx:id="heightColumn" text="Высота, м" />
+                    <TableColumn text="X _mass, м" fx:id="xMassColumn" />
+                    <TableColumn fx:id="yMassColumn" text="Y_mass, м" />
+                    <TableColumn fx:id="zMassColumn" text="Z_mass, м" />
+                    <TableColumn fx:id="massColumn" text="Масса, кг" />
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
+            </TableView>
+        </ScrollPane>
+        <ChoiceBox fx:id="cubesatChoiceBox" layoutX="44.0" layoutY="55.0" prefHeight="25.0" prefWidth="192.0" />
+        <Button fx:id="chooseCubesat" layoutX="258.0" layoutY="55.0" mnemonicParsing="false" onAction="#chooseCubesatSize" text="Выбрать" />
+        <Label layoutX="340.0" layoutY="59.0" prefHeight="17.0" prefWidth="102.0" text="Выбранный КА:" />
+        <TextField fx:id="chosenCubesat" editable="false" layoutX="436.0" layoutY="55.0" text="Не выбран" />
+        <Label layoutX="44.0" layoutY="466.0" text="Характеристики надувной оболочки">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+        <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="44.0" layoutY="551.0" prefHeight="226.0" prefWidth="635.0">
+            <TableView fx:id="ntuTableView" layoutX="44.0" prefHeight="12.0" prefWidth="614.0">
+                <columns>
+                    <TableColumn fx:id="nameNtuColumn" prefWidth="79.39999085664749" text="Название" />
+                    <TableColumn fx:id="formNtuColumn" prefWidth="71.0" text="Форма" />
+                    <TableColumn fx:id="radiusNtuColumn" prefWidth="72.20001220703125" text="Радиус, м" />
+                    <TableColumn fx:id="lengthNtuColumn" prefWidth="79.19999694824219" text="Длина, м" />
+                    <TableColumn fx:id="thicknessNtuColumn" prefWidth="107.4000244140625" text="Толщина,мкм" />
+                    <TableColumn fx:id="materialNtuColumn" prefWidth="97.39996337890625" text="Материал" />
+                    <TableColumn fx:id="densityNtuColumn" prefWidth="131.79998779296875" text="Плотность, кг/м3" />
+                </columns>
+            </TableView>
+        </ScrollPane>
+        <ChoiceBox fx:id="ntuChoiceBox" layoutX="44.0" layoutY="512.0" prefHeight="25.0" prefWidth="192.0" />
+        <Button fx:id="chooseNtu" layoutX="258.0" layoutY="512.0" mnemonicParsing="false" text="Выбрать" />
+        <Label layoutX="340.0" layoutY="516.0" text="Выбранная оболочка:" />
+        <TextField fx:id="chosenNtu" layoutX="472.0" layoutY="512.0" text="Не выбрана" />
+        <Button fx:id="refreshCubesat" layoutX="651.0" layoutY="73.0" mnemonicParsing="false" text="🗘" />
+        <Button fx:id="refreshNtu" layoutX="651.0" layoutY="525.0" mnemonicParsing="false" text="🗘" />
+        <Label layoutX="44.0" layoutY="810.0" text="Характеристики полета">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="167.0" layoutX="44.0" layoutY="855.0" stroke="#969696" strokeType="INSIDE" width="635.0" />
+        <Label layoutX="58.0" layoutY="869.0" text="Высота полета:" />
+        <TextField fx:id="heightFlight" layoutX="153.0" layoutY="865.0" />
+        <TextField fx:id="angleFlight" layoutX="153.0" layoutY="904.0" />
+        <TextField fx:id="speedFlight" layoutX="153.0" layoutY="942.0" />
+        <Label layoutX="58.0" layoutY="908.0" text="Угол атаки:" />
+        <Label layoutX="58.0" layoutY="946.0" text="Скорость:" />
+        <TextArea fx:id="flightArea" layoutX="356.0" layoutY="865.0" prefHeight="101.0" prefWidth="312.0" text="Высота полета: Не выбрана&#10;&#10;Угол атаки: Не выбран&#10;&#10;Скорость: Не выбрана" />
+        <Button fx:id="chooseFlight" layoutX="140.0" layoutY="980.0" mnemonicParsing="false" text="Выбрать" />
+        <Label fx:id="flightLog" layoutX="336.0" layoutY="997.0" text="Ошибка" textFill="RED" />
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="409.0" layoutX="717.0" layoutY="27.0" stroke="BLACK" strokeType="INSIDE" width="486.0" />
+        <Label layoutX="816.0" layoutY="39.0" text="Добавление нового космического аппарата">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <Label layoutX="740.0" layoutY="77.0" text="Название:" />
+        <Label layoutX="740.0" layoutY="107.0" text="Длина:" />
+        <Label layoutX="740.0" layoutY="137.0" text="Ширина:" />
+        <Label layoutX="740.0" layoutY="167.0" text="Высота:" />
+        <Label layoutX="740.0" layoutY="197.0" text="Масса:" />
+        <TextField fx:id="nameNewCubesat" layoutX="822.0" layoutY="73.0" prefHeight="25.0" prefWidth="137.0" />
+        <TextField fx:id="lengthNewCubesat" layoutX="822.0" layoutY="103.0" prefHeight="25.0" prefWidth="138.0" />
+        <TextField fx:id="widthNewCubesat" layoutX="822.0" layoutY="133.0" prefHeight="25.0" prefWidth="137.0" />
+        <TextField fx:id="heightNewCubesat" layoutX="822.0" layoutY="163.0" prefHeight="25.0" prefWidth="137.0" />
+        <TextField fx:id="massNewCubesat" layoutX="822.0" layoutY="197.0" prefHeight="25.0" prefWidth="137.0" />
+        <Label layoutX="970.0" layoutY="107.0" text="м" />
+        <Label layoutX="970.0" layoutY="137.0" text="м" />
+        <Label layoutX="970.0" layoutY="167.0" text="м" />
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="150.0" layoutX="997.0" layoutY="75.0" stroke="BLACK" strokeType="INSIDE" width="196.0" />
+        <Label layoutX="1021.0" layoutY="86.0" text="Координаты центра масса:" />
+        <Label layoutX="1010.0" layoutY="116.0" text="X_mass:" />
+        <Label layoutX="1010.0" layoutY="146.0" text="Y_mass:" />
+        <Label layoutX="1010.0" layoutY="176.0" text="Z_mass:" />
+        <TextField layoutX="1058.0" layoutY="112.0" prefHeight="25.0" prefWidth="103.0" fx:id="xMassNewCubesat" />
+        <TextField fx:id="yMassNewCubesat" layoutX="1058.0" layoutY="146.0" prefHeight="25.0" prefWidth="103.0" />
+        <TextField fx:id="zMassNewCubesat" layoutX="1058.0" layoutY="176.0" prefHeight="25.0" prefWidth="103.0" />
+        <Label layoutX="970.0" layoutY="197.0" text="кг" />
+        <Label layoutX="1170.0" layoutY="180.0" text="м" />
+        <Label layoutX="1170.0" layoutY="150.0" text="м" />
+        <Label layoutX="1170.0" layoutY="120.0" text="м" />
+        <Button fx:id="saveCubesat" layoutX="933.0" layoutY="242.0" mnemonicParsing="false" onAction="#saveNewCubesat" text="Сохранить" />
+        <Label fx:id="newCubesatLog" layoutX="770.0" layoutY="277.0" />
+        <Line endX="486.0" layoutX="717.0" layoutY="321.0" />
+        <Label layoutX="861.0" layoutY="334.0" text="Удаление космического аппарата">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <ChoiceBox fx:id="deleteCubesatChoiceBox" layoutX="821.0" layoutY="366.0" prefHeight="25.0" prefWidth="210.0" />
+        <Label layoutX="740.0" layoutY="370.0" text="Название:" />
+        <Button fx:id="deleteCubesatButton" layoutX="1083.0" layoutY="366.0" mnemonicParsing="false" onAction="#deleteCubesatSize" text="Удалить" />
+        <Label fx:id="deleteCubesatLog" layoutX="770.0" layoutY="399.0" />
+        <Label layoutX="833.0" layoutY="491.0" text="Добавление новой надувной оболочки">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <Label layoutX="740.0" layoutY="547.0" text="Название:" />
+        <TextField fx:id="nameNewNtu" layoutX="822.0" layoutY="547.0" prefHeight="25.0" prefWidth="137.0" />
+        <ChoiceBox fx:id="formChoiceBox" layoutX="822.0" layoutY="577.0" prefHeight="25.0" prefWidth="137.0" />
+        <Label layoutX="740.0" layoutY="577.0" text="Форма:" />
+        <Label layoutX="740.0" layoutY="607.0" text="Радиус:" />
+        <Label layoutX="740.0" layoutY="637.0" text="Длина:" />
+        <Label layoutX="740.0" layoutY="667.0" text="Толщина:" />
+        <Label layoutX="740.0" layoutY="697.0" text="Материал:" />
+        <TextField fx:id="radiusNewNtu" layoutX="822.0" layoutY="607.0" prefHeight="25.0" prefWidth="137.0" />
+        <TextField fx:id="lengthNewNtu" layoutX="822.0" layoutY="637.0" prefHeight="25.0" prefWidth="137.0" />
+        <TextField fx:id="thicknessNewNtu" layoutX="822.0" layoutY="667.0" prefHeight="25.0" prefWidth="137.0" />
+        <ChoiceBox fx:id="materialChoiceBox" layoutX="822.0" layoutY="697.0" prefHeight="25.0" prefWidth="137.0" />
+        <TableView fx:id="materialTableView" layoutX="988.0" layoutY="558.0" prefHeight="162.0" prefWidth="200.0">
+            <columns>
+                <TableColumn fx:id="nameMaterialColumn" prefWidth="89.1998291015625" text="Название" />
+                <TableColumn fx:id="densityMaterialColumn" prefWidth="110.800048828125" text="Плотность, кг/м3" />
+            </columns>
+        </TableView>
+        <Label layoutX="994.0" layoutY="537.0" text="Таблица плотности материалов">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <Button fx:id="saveNtu" layoutX="941.0" layoutY="752.0" mnemonicParsing="false" onAction="#saveNewNtu" text="Сохранить" />
+        <Label layoutX="861.0" layoutY="818.0" text="Удаление надувной оболочки">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <ChoiceBox fx:id="deleteNtuChoiceBox" layoutX="821.0" layoutY="850.0" prefHeight="25.0" prefWidth="210.0" />
+        <Label layoutX="740.0" layoutY="854.0" text="Название:" />
+        <Button fx:id="deleteNtuButton" layoutX="1083.0" layoutY="850.0" mnemonicParsing="false" text="Удалить" />
+        <Label layoutX="770.0" layoutY="896.0" text="Ошибка" textFill="RED" />
+        <Label layoutX="836.0" layoutY="936.0" text="Добавление нового материала оболочки">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <Label layoutX="740.0" layoutY="977.0" text="Радиус:" />
+        <Label layoutX="740.0" layoutY="1007.0" text="Длина:" />
+        <TextField layoutX="822.0" layoutY="977.0" prefHeight="25.0" prefWidth="137.0" />
+        <TextField layoutX="822.0" layoutY="1007.0" prefHeight="25.0" prefWidth="137.0" />
+        <Button fx:id="saveMaterial" layoutX="1031.0" layoutY="989.0" mnemonicParsing="false" text="Сохранить" />
+        <Label fx:id="newNtuLog" layoutX="770.0" layoutY="781.0" text="Ошибка" textFill="RED" />
+        <Label layoutX="766.0" layoutY="1044.0" text="Ошибка" textFill="RED" />
+        <Label layoutX="856.0" layoutY="1075.0" text="Удаление материала оболочки">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <ChoiceBox fx:id="deleteMaterialChoiceBox" layoutX="816.0" layoutY="1107.0" prefHeight="25.0" prefWidth="210.0" />
+        <Button fx:id="deleteMaterialButton" layoutX="1078.0" layoutY="1107.0" mnemonicParsing="false" text="Удалить" />
+        <Label layoutX="767.0" layoutY="1188.0" text="Ошибка" textFill="RED" />
+        <Label layoutX="741.0" layoutY="1111.0" text="Название:" />
+        <Label layoutX="971.0" layoutY="611.0" text="м" />
+        <Label layoutX="971.0" layoutY="641.0" text="м" />
+        <Label layoutX="971.0" layoutY="671.0" text="м" />
+        <Label layoutX="741.0" layoutY="1148.0" text="ВНИМАНИЕ: при удалении материала будут удалены все расчеты и оболочки " />
+        <Label layoutX="741.0" layoutY="1163.0" text="с этим материалом" />
+        <Line endX="486.0" layoutX="717.0" layoutY="810.0" />
+        <Line endX="486.0" layoutX="717.0" layoutY="925.0" />
+        <Line endX="486.0" layoutX="717.0" layoutY="1066.0" />
+        <Button fx:id="getCalculatesButton" layoutX="238.0" layoutY="1476.0" mnemonicParsing="false" onAction="#getAllCalculation" prefHeight="46.0" prefWidth="164.0" text="Выгрузить все расчеты" />
+      <Label layoutX="306.0" layoutY="869.0" text="км" />
+      <Label layoutX="306.0" layoutY="907.0" text="градусы" />
+      <Label layoutX="306.0" layoutY="948.0" text="км/ч" />
+    </Pane>
+</ScrollPane>

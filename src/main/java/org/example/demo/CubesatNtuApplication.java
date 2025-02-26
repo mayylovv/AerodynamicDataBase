@@ -1,6 +1,7 @@
 package org.example.demo;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -23,7 +24,7 @@ public class CubesatNtuApplication extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		Scene scene = new Scene(fxmlLoader.load(), 750, 400);
+		Scene scene = new Scene(fxmlLoader.load(), 1250, 600);
 		stage.setScene(scene);
 		stage.setTitle("AerospaceDatabase");
 		stage.show();

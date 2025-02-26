@@ -27,5 +27,4 @@ public class CubesatSize {
     double yMass;
     double zMass;
     double mass;
-
 }

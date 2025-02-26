@@ -1,7 +1,6 @@
 package org.example.demo.config;
 
 import lombok.RequiredArgsConstructor;
-import org.example.demo.repository.FormNtuRepository;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

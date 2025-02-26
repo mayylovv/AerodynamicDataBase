@@ -8,26 +8,16 @@ import org.example.demo.entity.CharacteristicsNtu;
 import org.example.demo.entity.CubesatSize;
 import org.example.demo.entity.MaterialInfoEntity;
 import org.example.demo.exception.NotFoundException;
-import org.example.demo.repository.CharacteristicsNtuRepository;
-import org.example.demo.repository.CubesatSizeRepository;
 import org.example.demo.repository.MaterialInfoRepository;
 import org.springframework.stereotype.Component;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-
-import static java.lang.Math.*;
 
 @Component
 @RequiredArgsConstructor
 public class AreaCalculator {
 
-    private final CubesatSizeRepository cubesatSizeRepository;
     private final MaterialInfoRepository materialInfoRepository;
-    private final CharacteristicsNtuRepository characteristicsNtuRepository;
 
-    public double calculateArea(String name, double radius, double length, double alfa) {
+    public double calculateArea(String name, double radius, double length) {
         String formula = FormulaLoader.loadFormula(name, "area");
         if (formula == null) {
             throw new NotFoundException("Формула для формы: " + name + " не найдена");
@@ -62,7 +52,7 @@ public class AreaCalculator {
     }
 
     private double[] calculateCentreMass(String formName, double radius, double length, CubesatSize cubesatSize, CharacteristicsNtu characteristicsNtu) {
-        MaterialInfoEntity materialOfNtu = materialInfoRepository.findById(characteristicsNtu.getMaterialId()).get();
+        MaterialInfoEntity materialOfNtu = materialInfoRepository.findById(characteristicsNtu.getMaterial().getId()).get();
 
         String formulaX = FormulaLoader.loadFormula(formName, "centreMassX");
         String formulaY = FormulaLoader.loadFormula(formName, "centreMassY");

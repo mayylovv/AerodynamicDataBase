@@ -9,8 +9,8 @@
     <Pane prefHeight="15803.0" prefWidth="1214.0">
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="746.0" layoutX="716.0" layoutY="477.0" stroke="BLACK" strokeType="INSIDE" width="486.0" />
         <Label layoutX="917.0" layoutY="764.0" />
-        <Button fx:id="calculateButton" layoutX="75.0" layoutY="1476.0" mnemonicParsing="false" onAction="#calculate" prefHeight="46.0" prefWidth="109.0" text="Провести расчет" />
-        <TextArea fx:id="resultTextArea" layoutX="44.0" layoutY="1258.0" minHeight="40.0" minWidth="40.0" prefHeight="191.0" prefWidth="400.0" />
+        <Button fx:id="calculateButton" layoutX="198.0" layoutY="1085.0" mnemonicParsing="false" onAction="#calculate" prefHeight="46.0" prefWidth="109.0" text="Провести расчет" />
+        <TextArea fx:id="resultTextArea" layoutX="44.0" layoutY="1153.0" minHeight="40.0" minWidth="40.0" prefHeight="191.0" prefWidth="635.0" />
         <Label layoutX="44.0" layoutY="14.0" text="Характеристики космического аппарата">
             <font>
                 <Font size="16.0" />
@@ -56,11 +56,9 @@
             </TableView>
         </ScrollPane>
         <ChoiceBox fx:id="ntuChoiceBox" layoutX="44.0" layoutY="512.0" prefHeight="25.0" prefWidth="192.0" />
-        <Button fx:id="chooseNtu" layoutX="258.0" layoutY="512.0" mnemonicParsing="false" text="Выбрать" />
+        <Button fx:id="chooseNtu" layoutX="258.0" layoutY="512.0" mnemonicParsing="false" onAction="#chooseNtuSize" text="Выбрать" />
         <Label layoutX="340.0" layoutY="516.0" text="Выбранная оболочка:" />
         <TextField fx:id="chosenNtu" layoutX="472.0" layoutY="512.0" text="Не выбрана" />
-        <Button fx:id="refreshCubesat" layoutX="651.0" layoutY="73.0" mnemonicParsing="false" text="🗘" />
-        <Button fx:id="refreshNtu" layoutX="651.0" layoutY="525.0" mnemonicParsing="false" text="🗘" />
         <Label layoutX="44.0" layoutY="810.0" text="Характеристики полета">
             <font>
                 <Font size="16.0" />
@@ -74,8 +72,8 @@
         <Label layoutX="58.0" layoutY="908.0" text="Угол атаки:" />
         <Label layoutX="58.0" layoutY="946.0" text="Скорость:" />
         <TextArea fx:id="flightArea" layoutX="356.0" layoutY="865.0" prefHeight="101.0" prefWidth="312.0" text="Высота полета: Не выбрана&#10;&#10;Угол атаки: Не выбран&#10;&#10;Скорость: Не выбрана" />
-        <Button fx:id="chooseFlight" layoutX="140.0" layoutY="980.0" mnemonicParsing="false" text="Выбрать" />
-        <Label fx:id="flightLog" layoutX="336.0" layoutY="997.0" text="Ошибка" textFill="RED" />
+        <Button fx:id="chooseFlight" layoutX="140.0" layoutY="980.0" mnemonicParsing="false" onAction="#chooseFlightChar" text="Выбрать" />
+        <Label fx:id="flightLog" layoutX="336.0" layoutY="997.0" />
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="409.0" layoutX="717.0" layoutY="27.0" stroke="BLACK" strokeType="INSIDE" width="486.0" />
         <Label layoutX="816.0" layoutY="39.0" text="Добавление нового космического аппарата">
             <font>
@@ -155,40 +153,45 @@
         </Label>
         <ChoiceBox fx:id="deleteNtuChoiceBox" layoutX="821.0" layoutY="850.0" prefHeight="25.0" prefWidth="210.0" />
         <Label layoutX="740.0" layoutY="854.0" text="Название:" />
-        <Button fx:id="deleteNtuButton" layoutX="1083.0" layoutY="850.0" mnemonicParsing="false" text="Удалить" />
-        <Label layoutX="770.0" layoutY="896.0" text="Ошибка" textFill="RED" />
+        <Button fx:id="deleteNtuButton" layoutX="1083.0" layoutY="850.0" mnemonicParsing="false" onAction="#deleteNtu" text="Удалить" />
+        <Label fx:id="deleteNtuLog" layoutX="770.0" layoutY="896.0" />
         <Label layoutX="836.0" layoutY="936.0" text="Добавление нового материала оболочки">
             <font>
                 <Font size="14.0" />
             </font>
         </Label>
-        <Label layoutX="740.0" layoutY="977.0" text="Радиус:" />
-        <Label layoutX="740.0" layoutY="1007.0" text="Длина:" />
-        <TextField layoutX="822.0" layoutY="977.0" prefHeight="25.0" prefWidth="137.0" />
-        <TextField layoutX="822.0" layoutY="1007.0" prefHeight="25.0" prefWidth="137.0" />
-        <Button fx:id="saveMaterial" layoutX="1031.0" layoutY="989.0" mnemonicParsing="false" text="Сохранить" />
-        <Label fx:id="newNtuLog" layoutX="770.0" layoutY="781.0" text="Ошибка" textFill="RED" />
-        <Label layoutX="766.0" layoutY="1044.0" text="Ошибка" textFill="RED" />
+        <Label layoutX="740.0" layoutY="1011.0" text="Плотность" />
+        <Label layoutX="740.0" layoutY="980.0" text="Название" />
+        <TextField fx:id="nameNewMaterial" layoutX="822.0" layoutY="977.0" prefHeight="25.0" prefWidth="137.0" />
+        <TextField fx:id="newDensityMaterial" layoutX="822.0" layoutY="1007.0" prefHeight="25.0" prefWidth="137.0" />
+        <Button fx:id="saveMaterial" layoutX="1031.0" layoutY="989.0" mnemonicParsing="false" onAction="#saveNewMaterial" text="Сохранить" />
+        <Label fx:id="newNtuLog" layoutX="770.0" layoutY="781.0" />
+        <Label fx:id="newMaterialLog" layoutX="766.0" layoutY="1044.0" />
         <Label layoutX="856.0" layoutY="1075.0" text="Удаление материала оболочки">
             <font>
                 <Font size="14.0" />
             </font>
         </Label>
         <ChoiceBox fx:id="deleteMaterialChoiceBox" layoutX="816.0" layoutY="1107.0" prefHeight="25.0" prefWidth="210.0" />
-        <Button fx:id="deleteMaterialButton" layoutX="1078.0" layoutY="1107.0" mnemonicParsing="false" text="Удалить" />
-        <Label layoutX="767.0" layoutY="1188.0" text="Ошибка" textFill="RED" />
+        <Button fx:id="deleteMaterialButton" layoutX="1078.0" layoutY="1107.0" mnemonicParsing="false" onAction="#deleteMaterial" text="Удалить" />
+        <Label fx:id="deleteMaterialLog" layoutX="767.0" layoutY="1188.0" />
         <Label layoutX="741.0" layoutY="1111.0" text="Название:" />
         <Label layoutX="971.0" layoutY="611.0" text="м" />
         <Label layoutX="971.0" layoutY="641.0" text="м" />
-        <Label layoutX="971.0" layoutY="671.0" text="м" />
+        <Label layoutX="964.0" layoutY="671.0" text="мкм" />
         <Label layoutX="741.0" layoutY="1148.0" text="ВНИМАНИЕ: при удалении материала будут удалены все расчеты и оболочки " />
         <Label layoutX="741.0" layoutY="1163.0" text="с этим материалом" />
         <Line endX="486.0" layoutX="717.0" layoutY="810.0" />
         <Line endX="486.0" layoutX="717.0" layoutY="925.0" />
         <Line endX="486.0" layoutX="717.0" layoutY="1066.0" />
-        <Button fx:id="getCalculatesButton" layoutX="238.0" layoutY="1476.0" mnemonicParsing="false" onAction="#getAllCalculation" prefHeight="46.0" prefWidth="164.0" text="Выгрузить все расчеты" />
       <Label layoutX="306.0" layoutY="869.0" text="км" />
       <Label layoutX="306.0" layoutY="907.0" text="градусы" />
-      <Label layoutX="306.0" layoutY="948.0" text="км/ч" />
+      <Label layoutX="306.0" layoutY="948.0" text="м/с" />
+      <Label layoutX="44.0" layoutY="1049.0" text="Результаты расчетов">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="964.0" layoutY="1011.0" text="кг/м3" />
     </Pane>
 </ScrollPane>

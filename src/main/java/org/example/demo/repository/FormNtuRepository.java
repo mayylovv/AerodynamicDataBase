@@ -16,23 +16,24 @@ public interface FormNtuRepository extends JpaRepository<FormNtu, Integer> {
 
     boolean existsByName(String name);
 
-    @Query(GET_ALL_FOR_TABLE)
-    List<NtuTableDto> getAllForTable();
+    @Query(value = GET_ALL_FOR_TABLE, nativeQuery = true)
+    List<Object[]> getAllForTable();
 
-    String GET_ALL_FOR_TABLE= """
-            SELECT
-                ntu.id,
-                ntu.name,
-                form.name AS form,
-                ntu.radius,
-                ntu.length,
-                ntu.thickness,
-                material.name AS material,
-                material.density
-            FROM CharacteristicsNtu ntu
-            JOIN ntu.form form
-            JOIN ntu.material material
-            """;
+    String GET_ALL_FOR_TABLE =
+            """
+                    SELECT
+                    ntu.id as id,
+                    ntu.name as name,
+                    form_ntu.name AS form,
+                    ntu.radius as radius,
+                    ntu.length as length,
+                    ntu.thickness as thickness,
+                    material_info.name AS material,
+                    material_info.density
+                    FROM aero_database.characteristics_ntu ntu
+                    JOIN aero_database.form_ntu form_ntu ON ntu.form_id = form_ntu.id
+                    JOIN aero_database.material_info material_info ON ntu.material_id = material_info.id
+                    """;
 }
 
 

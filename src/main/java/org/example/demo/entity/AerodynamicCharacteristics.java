@@ -23,7 +23,6 @@ public class AerodynamicCharacteristics {
     int id;
     double alfa;
     int cubesatSizeId;
-    int atmosphereId;
     int sizeNtuId;
     double forceX;
     double momentX;
@@ -33,6 +32,7 @@ public class AerodynamicCharacteristics {
     double coefficientY;
     double velocity_head;
     Timestamp dateOfCalculation;
+    double density;
     double speed;
     double minSpeed;
 

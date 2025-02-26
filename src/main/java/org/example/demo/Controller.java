@@ -1,6 +1,5 @@
 package org.example.demo;
 
-import jakarta.transaction.Transactional;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,6 +24,7 @@ import org.example.demo.service.InitializationService;
 import org.example.demo.service.MainCalculationService;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -39,6 +39,10 @@ public class Controller {
     private final MainCalculationService calculationService;
 
     private CubesatSize actualCubesatSize;
+    private CharacteristicsNtu actualCharacteristicsNtu;
+    private double actualHeightKm;
+    private double actualAlfa;
+    private double actualSpeed;
 
     // все что есть
     @FXML
@@ -72,11 +76,6 @@ public class Controller {
     @FXML
     private TableColumn<MaterialInfoEntity, Double> densityMaterialColumn;
 
-
-    // кнопки обновления
-    @FXML
-    private Button refreshCubesat, refreshNtu;
-
     @FXML
     private Button chooseNtu, chooseCubesat, chooseFlight;
 
@@ -95,6 +94,9 @@ public class Controller {
 
     @FXML
     private TextField heightFlight, speedFlight, angleFlight;
+
+    @FXML
+    private TextField nameNewMaterial, newDensityMaterial;
 
     @FXML
     private TextField nameNewCubesat, lengthNewCubesat, widthNewCubesat, heightNewCubesat, xMassNewCubesat, yMassNewCubesat, zMassNewCubesat, massNewCubesat;
@@ -157,7 +159,9 @@ public class Controller {
         cubesatTableView.setItems(FXCollections.observableArrayList(cubesatData));
 
         List<String> cubesatNameList = cubesatData.stream().map(CubesatSize::getName).toList();
+        deleteCubesatChoiceBox.getItems().clear();
         deleteCubesatChoiceBox.getItems().addAll(cubesatNameList);
+        cubesatChoiceBox.getItems().clear();
         cubesatChoiceBox.getItems().addAll(cubesatNameList);
     }
 
@@ -169,22 +173,23 @@ public class Controller {
     }
 
     @FXML
-    // todo
     public void deleteCubesatSize() {
         try {
             String cubesatName = deleteCubesatChoiceBox.getValue();
-            cubesatSizeRepository.removeByName(cubesatName);
+            CubesatSize cubesatSize = cubesatSizeRepository.findByName(cubesatName).get();
+            cubesatSizeRepository.delete(cubesatSize);
             deleteCubesatLog.setText("Запись с name " + cubesatName + " успешно удалена");
 
             List<CubesatSize> cubesatData = cubesatSizeRepository.findAll();
             cubesatTableView.setItems(FXCollections.observableArrayList(cubesatData));
 
             List<String> cubesatNameList = cubesatData.stream().map(CubesatSize::getName).toList();
+            deleteCubesatChoiceBox.getItems().clear();
             deleteCubesatChoiceBox.getItems().addAll(cubesatNameList);
+            cubesatChoiceBox.getItems().clear();
             cubesatChoiceBox.getItems().addAll(cubesatNameList);
         } catch (Exception e) {
-            deleteCubesatLog.setText("Запись cubesatName не удалена по неизвестной причине");
-            System.out.println(e);
+            deleteCubesatLog.setText("Запись "+ deleteCubesatChoiceBox.getValue() + " не удалена по неизвестной причине");
         }
     }
 
@@ -193,7 +198,6 @@ public class Controller {
         String name = nameNewNtu.getText();
         String formName = formChoiceBox.getValue();
         String radius = radiusNewNtu.getText();
-        if ("ШАР".equals(formName)) radius = "0";
         String length = lengthNewNtu.getText();
         String thickness = thicknessNewNtu.getText();
         String materialName = materialChoiceBox.getValue();
@@ -220,24 +224,166 @@ public class Controller {
         characteristicsNtuRepository.save(characteristicsNtu);
         newNtuLog.setText("Запись с name " + name + " успешно сохранена");
 
-        List<NtuTableDto> ntuData = formNtuRepository.getAllForTable();
+        List<NtuTableDto> ntuData = getAllForTable();
         ntuTableView.setItems(FXCollections.observableArrayList(ntuData));
+
+        List<String> ntuNameList = characteristicsNtuRepository.findAll().stream().map(CharacteristicsNtu::getName).toList();
+        deleteNtuChoiceBox.getItems().clear();
+        deleteNtuChoiceBox.getItems().addAll(ntuNameList);
+        ntuChoiceBox.getItems().clear();
+        ntuChoiceBox.getItems().addAll(ntuNameList);
+    }
+
+    @FXML
+    private void deleteNtu() {
+        try {
+            String ntuName = deleteNtuChoiceBox.getValue();
+            CharacteristicsNtu ntu = characteristicsNtuRepository.findByName(ntuName).get();
+            characteristicsNtuRepository.delete(ntu);
+            deleteNtuLog.setText("Запись с name " + ntuName + " успешно удалена");
+
+            List<NtuTableDto> ntuData = getAllForTable();
+            ntuTableView.setItems(FXCollections.observableArrayList(ntuData));
+
+            List<String> ntuNameList = characteristicsNtuRepository.findAll().stream().map(CharacteristicsNtu::getName).toList();
+            deleteNtuChoiceBox.getItems().clear();
+            deleteNtuChoiceBox.getItems().addAll(ntuNameList);
+            ntuChoiceBox.getItems().clear();
+            ntuChoiceBox.getItems().addAll(ntuNameList);
+
+        } catch (Exception e) {
+            deleteCubesatLog.setText("Запись " + deleteNtuChoiceBox.getValue() + "не удалена по неизвестной причине");
+        }
+    }
+
+    @FXML
+    private void saveNewMaterial() {
+        String name = nameNewMaterial.getText();
+        String density = newDensityMaterial.getText();
+        if (name.isBlank() || density.isBlank()) {
+            newMaterialLog.setText("Заполнены не все поля");
+            return;
+        }
+        MaterialInfoEntity materialInfo = new MaterialInfoEntity();
+        try {
+            materialInfo.setName(name);
+            materialInfo.setDensity(convertStringToDouble(density));
+        } catch (NumberFormatException e) {
+            newMaterialLog.setText("Некорректный формат данных, запись с name = " + name + " не сохранена");
+            return;
+        }
+        materialInfoRepository.save(materialInfo);
+        newMaterialLog.setText("Запись с name " + name + " успешно сохранена");
+
+
+        List<MaterialInfoEntity> materialData = materialInfoRepository.findAll();
+        materialTableView.setItems(FXCollections.observableArrayList(materialData));
+
+        List<NtuTableDto> ntuData = getAllForTable();
+        ntuTableView.setItems(FXCollections.observableArrayList(ntuData));
+
+        List<String> materialNameList = materialInfoRepository.findAll().stream().map(MaterialInfoEntity::getName).toList();
+        deleteMaterialChoiceBox.getItems().clear();
+        deleteMaterialChoiceBox.getItems().addAll(materialNameList);
+        materialChoiceBox.getItems().clear();
+        materialChoiceBox.getItems().addAll(materialNameList);
 
         List<String> ntuNameList = characteristicsNtuRepository.findAll().stream().map(CharacteristicsNtu::getName).toList();
         deleteNtuChoiceBox.getItems().addAll(ntuNameList);
         ntuChoiceBox.getItems().addAll(ntuNameList);
     }
 
+    @FXML
+    private void deleteMaterial() {
+        try {
+            String materialName = deleteMaterialChoiceBox.getValue();
+            MaterialInfoEntity material = materialInfoRepository.findByName(materialName).get();
+            List<CharacteristicsNtu> ntus = characteristicsNtuRepository.findAllByMaterial(material);
+            characteristicsNtuRepository.deleteAll(ntus);
+            materialInfoRepository.delete(material);
+            deleteMaterialLog.setText("Запись с name " + materialName + " успешно удалена");
+
+
+            List<MaterialInfoEntity> materialData = materialInfoRepository.findAll();
+            materialTableView.setItems(FXCollections.observableArrayList(materialData));
+
+            List<NtuTableDto> ntuData = getAllForTable();
+            ntuTableView.setItems(FXCollections.observableArrayList(ntuData));
+
+            List<String> materialNameList = materialInfoRepository.findAll().stream().map(MaterialInfoEntity::getName).toList();
+            deleteMaterialChoiceBox.getItems().clear();
+            deleteMaterialChoiceBox.getItems().addAll(materialNameList);
+            materialChoiceBox.getItems().clear();
+            materialChoiceBox.getItems().addAll(materialNameList);
+
+            List<String> ntuNameList = characteristicsNtuRepository.findAll().stream().map(CharacteristicsNtu::getName).toList();
+            deleteNtuChoiceBox.getItems().clear();
+            deleteNtuChoiceBox.getItems().addAll(ntuNameList);
+            ntuChoiceBox.getItems().clear();
+            ntuChoiceBox.getItems().addAll(ntuNameList);
+        } catch (Exception e) {
+            deleteMaterialLog.setText("Запись " + deleteMaterialChoiceBox.getValue() + "не удалена по неизвестной причине");
+        }
+    }
+
+    @FXML
+    private void chooseNtuSize() {
+        String ntuName = ntuChoiceBox.getValue();
+        actualCharacteristicsNtu = characteristicsNtuRepository.findByName(ntuName).get();
+        chosenNtu.setText(ntuName);
+
+    }
+
+    @FXML
+    private void chooseFlightChar() {
+        String heightKm = heightFlight.getText();
+        String alfa = angleFlight.getText();
+        String speed = speedFlight.getText();
+        if (heightKm.isBlank() || alfa.isBlank() || speed.isBlank()) {
+            flightLog.setText("Заполнены не все поля");
+            return;
+        }
+        try {
+            actualHeightKm = convertStringToDouble(heightKm);
+            actualAlfa = convertStringToDouble(alfa);
+            actualSpeed = convertStringToDouble(speed);
+            flightArea.setText(String.format(flightChar, actualHeightKm, actualAlfa, actualSpeed));
+        } catch (NumberFormatException e) {
+            newMaterialLog.setText("Некорректный формат данных");
+        }
+    }
+
 
     @FXML
     private void calculate() {
+        double alfa = actualAlfa * (Math.PI / 180); // тут радианы
+        double speed = actualSpeed; // тут метры в секунду
+        double radius = actualCharacteristicsNtu.getRadius();
+        double length = actualCharacteristicsNtu.getLength();
+        String formName = actualCharacteristicsNtu.getForm().getFileName();
 
+        System.out.println(alfa);
+        System.out.println(speed);
+        System.out.println(radius);
+        System.out.println(length);
+        System.out.println(formName);
+
+        String forceX = String.valueOf(calculationService.calculateForceX(actualHeightKm, radius, length, formName, speed));
+        String forceY = String.valueOf(calculationService.calculateForceY(actualHeightKm, radius, length, alfa, formName, speed));
+        String momentX = String.valueOf(calculationService.calculateMomentX(actualHeightKm, radius, length, speed, formName,
+                actualCubesatSize, actualCharacteristicsNtu));
+        String momentY = String.valueOf(calculationService.calculateMomentY(actualHeightKm, radius, alfa, length, speed, formName,
+                actualCubesatSize, actualCharacteristicsNtu));
+        String coefficientX = String.valueOf(calculationService.calculateCoefficientX(radius, length, formName));
+        String coefficientY = String.valueOf(calculationService.calculateCoefficientY(alfa));
+        String velocityHead = String.valueOf(calculationService.calculateVelocityHead(actualHeightKm, speed)); // тут
+
+
+        resultTextArea.setText(
+                String.format(result, forceX, momentX, coefficientX, forceY, momentY, coefficientY, velocityHead)
+        );
     }
 
-    @FXML
-    private void getAllCalculation() {
-
-    }
 
     private static double convertStringToDouble(String numberString) {
         if (numberString.contains(",")) {
@@ -257,7 +403,7 @@ public class Controller {
         List<MaterialInfoEntity> materialData = materialInfoRepository.findAll();
         materialTableView.setItems(FXCollections.observableArrayList(materialData));
 
-        List<NtuTableDto> ntuData = formNtuRepository.getAllForTable();
+        List<NtuTableDto> ntuData = getAllForTable();
         ntuTableView.setItems(FXCollections.observableArrayList(ntuData));
     }
 
@@ -304,10 +450,44 @@ public class Controller {
         return str == null || str.isBlank();
     }
 
+    public List<NtuTableDto> getAllForTable() {
+        List<Object[]> rawData = formNtuRepository.getAllForTable();
+        List<NtuTableDto> dtos = new ArrayList<>();
 
+        for (Object[] objects : rawData) {
+            NtuTableDto dto = new NtuTableDto(
+                    (Integer) objects[0], // ntu.id
+                    (String) objects[1],  // ntu.name
+                    (String) objects[2],  // form.name
+                    (Double) objects[3],  // ntu.radius
+                    (Double) objects[4],  // ntu.length
+                    (Double) objects[5],  // ntu.thickness
+                    (String) objects[6],  // material_info.name
+                    (Double) objects[7]   // material_info.density
+            );
+            dtos.add(dto);
+        }
+        return dtos;
+    }
 
+    private String flightChar = """
+            Высота полета: %s  км
+                        
+            Угол атаки: %s  градусов
+                        
+            Скорость: %s м/с
+            """;
 
-
+    private String result = """
+            Лобовое сопротивление: %s Н\n
+            Момент относительно оси х: %s Н·м\n
+            Коэффициент лобового сопротивления: %s \n
+            Подъемная сила: %s Н\n
+            Момент относительно оси y: %s Н·м\n
+            Коэффициент подъемной силы: %s \n
+            Скоростной напор: %s Па \n
+             
+            """;
 
 /*    @FXML
     private TextField nameField, lengthField, widthField, heightField;

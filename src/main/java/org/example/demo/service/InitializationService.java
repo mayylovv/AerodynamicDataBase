@@ -1,12 +1,10 @@
 package org.example.demo.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.demo.entity.Atmosphere;
 import org.example.demo.entity.CharacteristicsNtu;
 import org.example.demo.entity.CubesatSize;
 import org.example.demo.entity.FormNtu;
 import org.example.demo.entity.MaterialInfoEntity;
-import org.example.demo.repository.AtmosphereRepository;
 import org.example.demo.repository.CharacteristicsNtuRepository;
 import org.example.demo.repository.CubesatSizeRepository;
 import org.example.demo.repository.FormNtuRepository;
@@ -19,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class InitializationService {
     private final CubesatSizeRepository cubesatSizeRepository;
-    private final AtmosphereRepository atmosphereRepository;
     private final MaterialInfoRepository materialInfoRepository;
     private final FormNtuRepository formNtuRepository;
     private final CharacteristicsNtuRepository characteristicsNtuRepository;
@@ -34,10 +31,6 @@ public class InitializationService {
 
     public void saveMaterialInfo(MaterialInfoEntity materialInfoEntity) {
         materialInfoRepository.save(materialInfoEntity);
-    }
-
-    public List<String> getAllHeight() {
-        return atmosphereRepository.findAll().stream().map(Atmosphere::getHeightKm).map(String::valueOf).toList();
     }
 
     public List<String> getAllMaterial() {

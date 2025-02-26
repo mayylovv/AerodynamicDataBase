@@ -11,6 +11,8 @@ import org.example.demo.exception.NotFoundException;
 import org.example.demo.repository.MaterialInfoRepository;
 import org.springframework.stereotype.Component;
 
+import static java.lang.Math.pow;
+
 @Component
 @RequiredArgsConstructor
 public class AreaCalculator {
@@ -64,7 +66,7 @@ public class AreaCalculator {
 
         double shellNtu = evaluateFormula(FormulaLoader.loadFormula(formName, "shellNtu"), radius, length, 0, 0, 0);
         double massCs = cubesatSize.getMass();
-        double massArea = materialOfNtu.getDensity() * characteristicsNtu.getThickness() * shellNtu;
+        double massArea = materialOfNtu.getDensity() * characteristicsNtu.getThickness() * pow(10, -6) * shellNtu;
 
         return new double[]{
                 (massCs * x + massArea * x) / (massCs + massArea),

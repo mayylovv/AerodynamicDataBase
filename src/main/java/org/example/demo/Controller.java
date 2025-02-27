@@ -148,22 +148,43 @@ public class Controller {
             newCubesatLog.setText("Заполнены не все поля");
             return;
         }
-        CubesatSize cubesatSize = new CubesatSize();
-        try {
-            cubesatSize.setName(name);
-            cubesatSize.setLength(convertStringToDouble(length));
-            cubesatSize.setWidth(convertStringToDouble(width));
-            cubesatSize.setHeight(convertStringToDouble(height));
-            cubesatSize.setXMass(convertStringToDouble(xMass));
-            cubesatSize.setYMass(convertStringToDouble(yMass));
-            cubesatSize.setZMass(convertStringToDouble(zMass));
-            cubesatSize.setMass(convertStringToDouble(mass));
-        } catch (NumberFormatException e) {
-            newCubesatLog.setText("Некорректный формат данных, запись с name = " + name + " не сохранена");
-            return;
+        if (cubesatSizeRepository.findByName(name).isPresent()){
+            CubesatSize updateCubesat = cubesatSizeRepository.findByName(name).get();
+            try {
+                updateCubesat.setName(name);
+                updateCubesat.setLength(convertStringToDouble(length));
+                updateCubesat.setWidth(convertStringToDouble(width));
+                updateCubesat.setHeight(convertStringToDouble(height));
+                updateCubesat.setXMass(convertStringToDouble(xMass));
+                updateCubesat.setYMass(convertStringToDouble(yMass));
+                updateCubesat.setZMass(convertStringToDouble(zMass));
+                updateCubesat.setMass(convertStringToDouble(mass));
+            } catch (NumberFormatException e) {
+                newCubesatLog.setText("Некорректный формат данных, запись с name = " + name + " не сохранена");
+                return;
+            }
+            cubesatSizeRepository.save(updateCubesat);
+            newCubesatLog.setText("Запись с name " + name + " успешно обновлена");
+            List<AerodynamicCharacteristics> resultForDelete = aerodynamicCharacteristicsRepository.findAllByCubesatSizeId(updateCubesat.getId());
+            aerodynamicCharacteristicsRepository.deleteAll(resultForDelete);
+        } else {
+            CubesatSize cubesatSize = new CubesatSize();
+            try {
+                cubesatSize.setName(name);
+                cubesatSize.setLength(convertStringToDouble(length));
+                cubesatSize.setWidth(convertStringToDouble(width));
+                cubesatSize.setHeight(convertStringToDouble(height));
+                cubesatSize.setXMass(convertStringToDouble(xMass));
+                cubesatSize.setYMass(convertStringToDouble(yMass));
+                cubesatSize.setZMass(convertStringToDouble(zMass));
+                cubesatSize.setMass(convertStringToDouble(mass));
+            } catch (NumberFormatException e) {
+                newCubesatLog.setText("Некорректный формат данных, запись с name = " + name + " не сохранена");
+                return;
+            }
+            cubesatSizeRepository.save(cubesatSize);
+            newCubesatLog.setText("Запись с name " + name + " успешно сохранена");
         }
-        cubesatSizeRepository.save(cubesatSize);
-        newCubesatLog.setText("Запись с name " + name + " успешно сохранена");
 
         List<CubesatSize> cubesatData = cubesatSizeRepository.findAll();
         cubesatTableView.setItems(FXCollections.observableArrayList(cubesatData));
@@ -219,22 +240,43 @@ public class Controller {
             newNtuLog.setText("Заполнены не все поля");
             return;
         }
-        CharacteristicsNtu characteristicsNtu = new CharacteristicsNtu();
-        FormNtu formNtu = formNtuRepository.findByName(formName).get();
-        MaterialInfoEntity materialInfo = materialInfoRepository.findByName(materialName).get();
-        try {
-            characteristicsNtu.setName(name);
-            characteristicsNtu.setForm(formNtu);
-            characteristicsNtu.setRadius(convertStringToDouble(radius));
-            characteristicsNtu.setLength(convertStringToDouble(length));
-            characteristicsNtu.setThickness(convertStringToDouble(thickness));
-            characteristicsNtu.setMaterial(materialInfo);
-        } catch (NumberFormatException e) {
-            newNtuLog.setText("Некорректный формат данных, запись с name = " + name + " не сохранена");
-            return;
+        if (characteristicsNtuRepository.findByName(name).isPresent()) {
+            CharacteristicsNtu updatedNtu = characteristicsNtuRepository.findByName(name).get();
+            FormNtu formNtu = formNtuRepository.findByName(formName).get();
+            MaterialInfoEntity materialInfo = materialInfoRepository.findByName(materialName).get();
+            try {
+                updatedNtu.setName(name);
+                updatedNtu.setForm(formNtu);
+                updatedNtu.setRadius(convertStringToDouble(radius));
+                updatedNtu.setLength(convertStringToDouble(length));
+                updatedNtu.setThickness(convertStringToDouble(thickness));
+                updatedNtu.setMaterial(materialInfo);
+            } catch (NumberFormatException e) {
+                newNtuLog.setText("Некорректный формат данных, запись с name = " + name + " не сохранена");
+                return;
+            }
+            characteristicsNtuRepository.save(updatedNtu);
+            newNtuLog.setText("Запись с name " + name + " успешно обновлена");
+            List<AerodynamicCharacteristics> resultForDelete = aerodynamicCharacteristicsRepository.findAllByNtuId(updatedNtu.getId());
+            aerodynamicCharacteristicsRepository.deleteAll(resultForDelete);
+        } else {
+            CharacteristicsNtu characteristicsNtu = new CharacteristicsNtu();
+            FormNtu formNtu = formNtuRepository.findByName(formName).get();
+            MaterialInfoEntity materialInfo = materialInfoRepository.findByName(materialName).get();
+            try {
+                characteristicsNtu.setName(name);
+                characteristicsNtu.setForm(formNtu);
+                characteristicsNtu.setRadius(convertStringToDouble(radius));
+                characteristicsNtu.setLength(convertStringToDouble(length));
+                characteristicsNtu.setThickness(convertStringToDouble(thickness));
+                characteristicsNtu.setMaterial(materialInfo);
+            } catch (NumberFormatException e) {
+                newNtuLog.setText("Некорректный формат данных, запись с name = " + name + " не сохранена");
+                return;
+            }
+            characteristicsNtuRepository.save(characteristicsNtu);
+            newNtuLog.setText("Запись с name " + name + " успешно сохранена");
         }
-        characteristicsNtuRepository.save(characteristicsNtu);
-        newNtuLog.setText("Запись с name " + name + " успешно сохранена");
 
         List<NtuTableDto> ntuData = getAllForTable();
         ntuTableView.setItems(FXCollections.observableArrayList(ntuData));
@@ -278,16 +320,35 @@ public class Controller {
             newMaterialLog.setText("Заполнены не все поля");
             return;
         }
-        MaterialInfoEntity materialInfo = new MaterialInfoEntity();
-        try {
-            materialInfo.setName(name);
-            materialInfo.setDensity(convertStringToDouble(density));
-        } catch (NumberFormatException e) {
-            newMaterialLog.setText("Некорректный формат данных, запись с name = " + name + " не сохранена");
-            return;
+        if (materialInfoRepository.findByName(name).isPresent()){
+            MaterialInfoEntity updateMaterial = materialInfoRepository.findByName(name).get();
+            try {
+                updateMaterial.setName(name);
+                updateMaterial.setDensity(convertStringToDouble(density));
+            } catch (NumberFormatException e) {
+                newMaterialLog.setText("Некорректный формат данных, запись с name = " + name + " не сохранена");
+                return;
+            }
+            materialInfoRepository.save(updateMaterial);
+
+            List<CharacteristicsNtu> listNtu = characteristicsNtuRepository.findAllByMaterial(updateMaterial);
+            List<Integer> listNtuId = listNtu.stream().map(CharacteristicsNtu::getId).toList();
+            List<AerodynamicCharacteristics> resultForDelete = aerodynamicCharacteristicsRepository.findAllByNtuIdIn(listNtuId);
+            aerodynamicCharacteristicsRepository.deleteAll(resultForDelete);
+            characteristicsNtuRepository.deleteAll(listNtu);
+            newMaterialLog.setText("Запись с name " + name + " успешно обновлена");
+        } else {
+            MaterialInfoEntity materialInfo = new MaterialInfoEntity();
+            try {
+                materialInfo.setName(name);
+                materialInfo.setDensity(convertStringToDouble(density));
+            } catch (NumberFormatException e) {
+                newMaterialLog.setText("Некорректный формат данных, запись с name = " + name + " не сохранена");
+                return;
+            }
+            materialInfoRepository.save(materialInfo);
+            newMaterialLog.setText("Запись с name " + name + " успешно сохранена");
         }
-        materialInfoRepository.save(materialInfo);
-        newMaterialLog.setText("Запись с name " + name + " успешно сохранена");
 
 
         List<MaterialInfoEntity> materialData = materialInfoRepository.findAll();

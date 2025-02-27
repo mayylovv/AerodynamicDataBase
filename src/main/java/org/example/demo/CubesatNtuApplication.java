@@ -3,7 +3,10 @@ package org.example.demo;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,10 +27,19 @@ public class CubesatNtuApplication extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		Scene scene = new Scene(fxmlLoader.load(), 1250, 600);
+		Parent root = fxmlLoader.load();
+		Scene scene = new Scene(root, 1250, 600);
 		stage.setScene(scene);
 		stage.setTitle("AerospaceDatabase");
+
+		ScrollPane scrollPane = (ScrollPane) root.lookup("#cubesatScroller"); // найдите ваш ScrollPane
+		if (scrollPane != null) {
+			scrollPane.setVvalue(0); // Сначала прокрутите вверх
+		}
+
 		stage.show();
+
+
 	}
 
 	@Override

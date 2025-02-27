@@ -8,7 +8,7 @@ import static java.lang.Math.sqrt;
 @Component
 public class SpeedCalculator {
 
-    public double calculateSpeed(double heightKm, double overSpeed) {
-        return overSpeed + sqrt(Constant.GRAVITY_CONSTANT * Constant.EARTH_MASS / (heightKm + Constant.EARTH_RADIUS));
+    public double calculateMinSpeed(double heightKm) {
+        return sqrt(Constant.GRAVITY_CONSTANT * Constant.EARTH_MASS / (heightKm + Constant.EARTH_RADIUS));
     }
 }

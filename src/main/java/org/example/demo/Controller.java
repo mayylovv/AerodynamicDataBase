@@ -5,17 +5,21 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import lombok.RequiredArgsConstructor;
+import org.example.demo.dto.FlightCharacteristics;
 import org.example.demo.dto.NtuTableDto;
+import org.example.demo.entity.AerodynamicCharacteristics;
 import org.example.demo.entity.CharacteristicsNtu;
 import org.example.demo.entity.CubesatSize;
 import org.example.demo.entity.FormNtu;
 import org.example.demo.entity.MaterialInfoEntity;
+import org.example.demo.repository.AerodynamicCharacteristicsRepository;
 import org.example.demo.repository.CharacteristicsNtuRepository;
 import org.example.demo.repository.CubesatSizeRepository;
 import org.example.demo.repository.FormNtuRepository;
@@ -24,6 +28,7 @@ import org.example.demo.service.InitializationService;
 import org.example.demo.service.MainCalculationService;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,17 +42,22 @@ public class Controller {
     private final CharacteristicsNtuRepository characteristicsNtuRepository;
     private final InitializationService initializationService;
     private final MainCalculationService calculationService;
+    private final AerodynamicCharacteristicsRepository aerodynamicCharacteristicsRepository;
 
     private CubesatSize actualCubesatSize;
     private CharacteristicsNtu actualCharacteristicsNtu;
     private double actualHeightKm;
     private double actualAlfa;
     private double actualSpeed;
+    private FlightCharacteristics actualFlightChar;
 
     // все что есть
     @FXML
     private ChoiceBox<String> cubesatChoiceBox, ntuChoiceBox, formChoiceBox, materialChoiceBox, deleteCubesatChoiceBox,
             deleteNtuChoiceBox, deleteMaterialChoiceBox;
+
+    @FXML
+    public ScrollPane cubesatScroller;
 
     @FXML
     private TableView<NtuTableDto> ntuTableView;
@@ -345,8 +355,13 @@ public class Controller {
         }
         try {
             actualHeightKm = convertStringToDouble(heightKm);
-            actualAlfa = convertStringToDouble(alfa);
+            actualAlfa = convertStringToDoubleWithMinus(alfa);
             actualSpeed = convertStringToDouble(speed);
+            FlightCharacteristics flightCharacteristics = new FlightCharacteristics();
+            flightCharacteristics.setHeightKm(actualHeightKm);
+            flightCharacteristics.setAlfa(actualAlfa);
+            flightCharacteristics.setSpeed(actualSpeed);
+            actualFlightChar = flightCharacteristics;
             flightArea.setText(String.format(flightChar, actualHeightKm, actualAlfa, actualSpeed));
         } catch (NumberFormatException e) {
             newMaterialLog.setText("Некорректный формат данных");
@@ -356,34 +371,66 @@ public class Controller {
 
     @FXML
     private void calculate() {
-        double alfa = actualAlfa * (Math.PI / 180); // тут радианы
-        double speed = actualSpeed; // тут метры в секунду
-        double radius = actualCharacteristicsNtu.getRadius();
-        double length = actualCharacteristicsNtu.getLength();
-        String formName = actualCharacteristicsNtu.getForm().getFileName();
+        if (actualCharacteristicsNtu == null || actualCubesatSize == null || actualFlightChar == null) {
+            resultTextArea.setText("Не все поля заполнены");
+        } else {
+            double alfa = actualAlfa * (Math.PI / 180); // тут радианы
+            double speed = actualSpeed; // тут метры в секунду
+            double radius = actualCharacteristicsNtu.getRadius();
+            double length = actualCharacteristicsNtu.getLength();
+            String formName = actualCharacteristicsNtu.getForm().getFileName();
 
-        System.out.println(alfa);
-        System.out.println(speed);
-        System.out.println(radius);
-        System.out.println(length);
-        System.out.println(formName);
+            System.out.println(alfa);
+            System.out.println(speed);
+            System.out.println(radius);
+            System.out.println(length);
+            System.out.println(formName);
 
-        String forceX = String.valueOf(calculationService.calculateForceX(actualHeightKm, radius, length, formName, speed));
-        String forceY = String.valueOf(calculationService.calculateForceY(actualHeightKm, radius, length, alfa, formName, speed));
-        String momentX = String.valueOf(calculationService.calculateMomentX(actualHeightKm, radius, length, speed, formName,
-                actualCubesatSize, actualCharacteristicsNtu));
-        String momentY = String.valueOf(calculationService.calculateMomentY(actualHeightKm, radius, alfa, length, speed, formName,
-                actualCubesatSize, actualCharacteristicsNtu));
-        String coefficientX = String.valueOf(calculationService.calculateCoefficientX(radius, length, formName));
-        String coefficientY = String.valueOf(calculationService.calculateCoefficientY(alfa));
-        String velocityHead = String.valueOf(calculationService.calculateVelocityHead(actualHeightKm, speed)); // тут
+            double forceX = calculationService.calculateForceX(actualHeightKm, radius, length, formName, speed);
+            double forceY = calculationService.calculateForceY(actualHeightKm, radius, length, alfa, formName, speed);
+            double momentX = calculationService.calculateMomentX(actualHeightKm, radius, length, speed, formName,
+                    actualCubesatSize, actualCharacteristicsNtu);
+            double momentY = calculationService.calculateMomentY(actualHeightKm, radius, alfa, length, speed, formName,
+                    actualCubesatSize, actualCharacteristicsNtu);
+            double coefficientX = calculationService.calculateCoefficientX(radius, length, formName);
+            double coefficientY = calculationService.calculateCoefficientY(alfa);
+            double velocityHead = calculationService.calculateVelocityHead(actualHeightKm, speed);
+            double density = calculationService.getDensity(actualHeightKm);
+            double minSpeed = calculationService.calculateMinSpeed(actualHeightKm);
+
+            String strForceX = String.valueOf(forceX);
+            String strForceY = String.valueOf(forceY);
+            String strMomentX = String.valueOf(momentX);
+            String strMomentY = String.valueOf(momentY);
+            String strCoefficientX = String.valueOf(coefficientX);
+            String strCoefficientY = String.valueOf(coefficientY);
+            String strVelocityHead = String.valueOf(velocityHead); // тут
 
 
-        resultTextArea.setText(
-                String.format(result, forceX, momentX, coefficientX, forceY, momentY, coefficientY, velocityHead)
-        );
+            resultTextArea.setText(
+                    String.format(result, strForceX, strMomentX, strCoefficientX, strForceY, strMomentY, strCoefficientY, strVelocityHead)
+            );
+
+            AerodynamicCharacteristics aeroChar = new AerodynamicCharacteristics();
+            aeroChar.setAlfa(alfa);
+            aeroChar.setCubesatSizeId(actualCubesatSize.getId());
+            aeroChar.setNtuId(actualCharacteristicsNtu.getId());
+            aeroChar.setForceX(forceX);
+            aeroChar.setMomentX(momentX);
+            aeroChar.setForceY(forceY);
+            aeroChar.setMomentY(momentY);
+            aeroChar.setCoefficientX(coefficientX);
+            aeroChar.setCoefficientY(coefficientY);
+            aeroChar.setVelocityHead(velocityHead);
+            aeroChar.setDateOfCalculation(LocalDateTime.now());
+            aeroChar.setDensity(density);
+            aeroChar.setSpeed(speed);
+            aeroChar.setMinSpeed(minSpeed);
+
+            aerodynamicCharacteristicsRepository.save(aeroChar);
+
+        }
     }
-
 
     private static double convertStringToDouble(String numberString) {
         if (numberString.contains(",")) {
@@ -393,6 +440,14 @@ public class Controller {
         if (resultDouble < 0) {
             throw new NumberFormatException();
         }
+        return resultDouble;
+    }
+
+    private static double convertStringToDoubleWithMinus(String numberString) {
+        if (numberString.contains(",")) {
+            numberString = numberString.replace(",", ".");
+        }
+        double resultDouble = Double.parseDouble(numberString);
         return resultDouble;
     }
 
@@ -472,21 +527,20 @@ public class Controller {
 
     private String flightChar = """
             Высота полета: %s  км
-                        
+                       \s
             Угол атаки: %s  градусов
-                        
+                       \s
             Скорость: %s м/с
-            """;
+           \s""";
 
     private String result = """
-            Лобовое сопротивление: %s Н\n
-            Момент относительно оси х: %s Н·м\n
-            Коэффициент лобового сопротивления: %s \n
-            Подъемная сила: %s Н\n
-            Момент относительно оси y: %s Н·м\n
-            Коэффициент подъемной силы: %s \n
-            Скоростной напор: %s Па \n
-             
+            Лобовое сопротивление: %s Н
+            Момент относительно оси х: %s Н·м
+            Коэффициент лобового сопротивления: %s
+            Подъемная сила: %s Н
+            Момент относительно оси y: %s Н·м
+            Коэффициент подъемной силы: %s
+            Скоростной напор: %s Па
             """;
 
 /*    @FXML

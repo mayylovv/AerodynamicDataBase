@@ -77,8 +77,8 @@ public class MainCalculationService {
         return DENSITY_ON_EARTH * Math.exp(valueExp);
     }
 
-    public double calculateSpeed(double heightKm, double overSpeed) {
-        return speedCalculator.calculateSpeed(heightKm, overSpeed);
+    public double calculateMinSpeed(double heightKm) {
+        return speedCalculator.calculateMinSpeed(heightKm);
     }
 
     public double calculateLevelArm(String formName, double radius, double length, CubesatSize cubesatSize, CharacteristicsNtu charNtu) {

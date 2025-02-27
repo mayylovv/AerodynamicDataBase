@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -23,15 +24,15 @@ public class AerodynamicCharacteristics {
     int id;
     double alfa;
     int cubesatSizeId;
-    int sizeNtuId;
+    int ntuId;
     double forceX;
     double momentX;
     double coefficientX;
     double forceY;
     double momentY;
     double coefficientY;
-    double velocity_head;
-    Timestamp dateOfCalculation;
+    double velocityHead;
+    LocalDateTime dateOfCalculation;
     double density;
     double speed;
     double minSpeed;

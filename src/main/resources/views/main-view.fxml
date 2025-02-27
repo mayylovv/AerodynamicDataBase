@@ -5,12 +5,12 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="1100.0" prefHeight="1600.0" prefWidth="1241.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.Controller">
+<ScrollPane fx:id="cubesatScroller" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="1100.0" prefHeight="1600.0" prefWidth="1241.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.Controller">
     <Pane prefHeight="15803.0" prefWidth="1214.0">
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="746.0" layoutX="716.0" layoutY="477.0" stroke="BLACK" strokeType="INSIDE" width="486.0" />
         <Label layoutX="917.0" layoutY="764.0" />
-        <Button fx:id="calculateButton" layoutX="198.0" layoutY="1085.0" mnemonicParsing="false" onAction="#calculate" prefHeight="46.0" prefWidth="109.0" text="Провести расчет" />
-        <TextArea fx:id="resultTextArea" layoutX="44.0" layoutY="1153.0" minHeight="40.0" minWidth="40.0" prefHeight="191.0" prefWidth="635.0" />
+        <Button fx:id="calculateButton" layoutX="307.0" layoutY="1072.0" mnemonicParsing="false" onAction="#calculate" prefHeight="46.0" prefWidth="109.0" text="Провести расчет" />
+        <TextArea fx:id="resultTextArea" layoutX="44.0" layoutY="1128.0" minHeight="40.0" minWidth="40.0" prefHeight="191.0" prefWidth="635.0" />
         <Label layoutX="44.0" layoutY="14.0" text="Характеристики космического аппарата">
             <font>
                 <Font size="16.0" />

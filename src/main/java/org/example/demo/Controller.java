@@ -187,6 +187,8 @@ public class Controller {
         try {
             String cubesatName = deleteCubesatChoiceBox.getValue();
             CubesatSize cubesatSize = cubesatSizeRepository.findByName(cubesatName).get();
+            List<AerodynamicCharacteristics> listAeroChar = aerodynamicCharacteristicsRepository.findAllByCubesatSizeId(cubesatSize.getId());
+            aerodynamicCharacteristicsRepository.deleteAll(listAeroChar);
             cubesatSizeRepository.delete(cubesatSize);
             deleteCubesatLog.setText("Запись с name " + cubesatName + " успешно удалена");
 
@@ -199,7 +201,7 @@ public class Controller {
             cubesatChoiceBox.getItems().clear();
             cubesatChoiceBox.getItems().addAll(cubesatNameList);
         } catch (Exception e) {
-            deleteCubesatLog.setText("Запись "+ deleteCubesatChoiceBox.getValue() + " не удалена по неизвестной причине");
+            deleteCubesatLog.setText("Запись " + deleteCubesatChoiceBox.getValue() + " не удалена по неизвестной причине");
         }
     }
 
@@ -249,6 +251,8 @@ public class Controller {
         try {
             String ntuName = deleteNtuChoiceBox.getValue();
             CharacteristicsNtu ntu = characteristicsNtuRepository.findByName(ntuName).get();
+            List<AerodynamicCharacteristics> listAeroChar = aerodynamicCharacteristicsRepository.findAllByNtuId(ntu.getId());
+            aerodynamicCharacteristicsRepository.deleteAll(listAeroChar);
             characteristicsNtuRepository.delete(ntu);
             deleteNtuLog.setText("Запись с name " + ntuName + " успешно удалена");
 
@@ -309,6 +313,11 @@ public class Controller {
             String materialName = deleteMaterialChoiceBox.getValue();
             MaterialInfoEntity material = materialInfoRepository.findByName(materialName).get();
             List<CharacteristicsNtu> ntus = characteristicsNtuRepository.findAllByMaterial(material);
+            List<Integer> ntuIds = ntus.stream()
+                    .map(CharacteristicsNtu::getId)
+                    .toList();
+            List<AerodynamicCharacteristics> listAeroChar = aerodynamicCharacteristicsRepository.findAllByNtuIdIn(ntuIds);
+            aerodynamicCharacteristicsRepository.deleteAll(listAeroChar);
             characteristicsNtuRepository.deleteAll(ntus);
             materialInfoRepository.delete(material);
             deleteMaterialLog.setText("Запись с name " + materialName + " успешно удалена");
@@ -331,6 +340,8 @@ public class Controller {
             deleteNtuChoiceBox.getItems().addAll(ntuNameList);
             ntuChoiceBox.getItems().clear();
             ntuChoiceBox.getItems().addAll(ntuNameList);
+
+
         } catch (Exception e) {
             deleteMaterialLog.setText("Запись " + deleteMaterialChoiceBox.getValue() + "не удалена по неизвестной причине");
         }
@@ -526,12 +537,12 @@ public class Controller {
     }
 
     private String flightChar = """
-            Высота полета: %s  км
-                       \s
-            Угол атаки: %s  градусов
-                       \s
-            Скорость: %s м/с
-           \s""";
+             Высота полета: %s  км
+                        \s
+             Угол атаки: %s  градусов
+                        \s
+             Скорость: %s м/с
+            \s""";
 
     private String result = """
             Лобовое сопротивление: %s Н

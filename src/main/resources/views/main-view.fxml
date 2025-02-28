@@ -5,12 +5,12 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<ScrollPane fx:id="cubesatScroller" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="1100.0" prefHeight="1600.0" prefWidth="1241.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.Controller">
-    <Pane prefHeight="15803.0" prefWidth="1214.0">
+<ScrollPane fx:id="cubesatScroller" maxHeight="1700.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="1100.0" prefHeight="1600.0" prefWidth="1241.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.Controller">
+    <Pane prefHeight="1700.0" prefWidth="1214.0">
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="746.0" layoutX="716.0" layoutY="477.0" stroke="BLACK" strokeType="INSIDE" width="486.0" />
         <Label layoutX="917.0" layoutY="764.0" />
         <Button fx:id="calculateButton" layoutX="307.0" layoutY="1072.0" mnemonicParsing="false" onAction="#calculate" prefHeight="46.0" prefWidth="109.0" text="Провести расчет" />
-        <TextArea fx:id="resultTextArea" layoutX="44.0" layoutY="1128.0" minHeight="40.0" minWidth="40.0" prefHeight="191.0" prefWidth="635.0" />
+        <TextArea fx:id="resultTextArea" editable="false" layoutX="44.0" layoutY="1128.0" minHeight="40.0" minWidth="40.0" prefHeight="191.0" prefWidth="635.0" />
         <Label layoutX="44.0" layoutY="14.0" text="Характеристики космического аппарата">
             <font>
                 <Font size="16.0" />
@@ -50,15 +50,15 @@
                     <TableColumn fx:id="radiusNtuColumn" prefWidth="72.20001220703125" text="Радиус, м" />
                     <TableColumn fx:id="lengthNtuColumn" prefWidth="79.19999694824219" text="Длина, м" />
                     <TableColumn fx:id="thicknessNtuColumn" prefWidth="107.4000244140625" text="Толщина,мкм" />
-                    <TableColumn fx:id="materialNtuColumn" prefWidth="97.39996337890625" text="Материал" />
-                    <TableColumn fx:id="densityNtuColumn" prefWidth="131.79998779296875" text="Плотность, кг/м3" />
+                    <TableColumn fx:id="materialNtuColumn" prefWidth="94.60003662109375" text="Материал" />
+                    <TableColumn fx:id="densityNtuColumn" prefWidth="135.0" text="Плотность, кг/м3" />
                 </columns>
             </TableView>
         </ScrollPane>
         <ChoiceBox fx:id="ntuChoiceBox" layoutX="44.0" layoutY="512.0" prefHeight="25.0" prefWidth="192.0" />
         <Button fx:id="chooseNtu" layoutX="258.0" layoutY="512.0" mnemonicParsing="false" onAction="#chooseNtuSize" text="Выбрать" />
         <Label layoutX="340.0" layoutY="516.0" text="Выбранная оболочка:" />
-        <TextField fx:id="chosenNtu" layoutX="472.0" layoutY="512.0" text="Не выбрана" />
+        <TextField fx:id="chosenNtu" editable="false" layoutX="472.0" layoutY="512.0" text="Не выбрана" />
         <Label layoutX="44.0" layoutY="810.0" text="Характеристики полета">
             <font>
                 <Font size="16.0" />
@@ -71,7 +71,7 @@
         <TextField fx:id="speedFlight" layoutX="153.0" layoutY="942.0" />
         <Label layoutX="58.0" layoutY="908.0" text="Угол атаки:" />
         <Label layoutX="58.0" layoutY="946.0" text="Скорость:" />
-        <TextArea fx:id="flightArea" layoutX="356.0" layoutY="865.0" prefHeight="101.0" prefWidth="312.0" text="Высота полета: Не выбрана&#10;&#10;Угол атаки: Не выбран&#10;&#10;Скорость: Не выбрана" />
+        <TextArea fx:id="flightArea" editable="false" layoutX="356.0" layoutY="865.0" prefHeight="101.0" prefWidth="312.0" text="Высота полета: Не выбрана&#10;&#10;Угол атаки: Не выбран&#10;&#10;Скорость: Не выбрана" />
         <Button fx:id="chooseFlight" layoutX="140.0" layoutY="980.0" mnemonicParsing="false" onAction="#chooseFlightChar" text="Выбрать" />
         <Label fx:id="flightLog" layoutX="336.0" layoutY="997.0" />
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="409.0" layoutX="717.0" layoutY="27.0" stroke="BLACK" strokeType="INSIDE" width="486.0" />

@@ -24,6 +24,7 @@ import org.example.demo.repository.CharacteristicsNtuRepository;
 import org.example.demo.repository.CubesatSizeRepository;
 import org.example.demo.repository.FormNtuRepository;
 import org.example.demo.repository.MaterialInfoRepository;
+import org.example.demo.service.AreaCalculator;
 import org.example.demo.service.InitializationService;
 import org.example.demo.service.MainCalculationService;
 import org.springframework.stereotype.Component;
@@ -43,6 +44,7 @@ public class Controller {
     private final InitializationService initializationService;
     private final MainCalculationService calculationService;
     private final AerodynamicCharacteristicsRepository aerodynamicCharacteristicsRepository;
+    private final AreaCalculator areaCalculator;
 
     private CubesatSize actualCubesatSize;
     private CharacteristicsNtu actualCharacteristicsNtu;
@@ -457,18 +459,21 @@ public class Controller {
             System.out.println(radius);
             System.out.println(length);
             System.out.println(formName);
+            System.out.println("Площадь шара " +areaCalculator.calculateArea(formName, radius, length, alfa));
 
-            double forceX = calculationService.calculateForceX(actualHeightKm, radius, length, formName, speed);
+
+            double forceX = calculationService.calculateForceX(actualHeightKm, radius, length, alfa, formName, speed);
             double forceY = calculationService.calculateForceY(actualHeightKm, radius, length, alfa, formName, speed);
-            double momentX = calculationService.calculateMomentX(actualHeightKm, radius, length, speed, formName,
+            double momentX = calculationService.calculateMomentX(actualHeightKm, radius, length, alfa, speed, formName,
                     actualCubesatSize, actualCharacteristicsNtu);
             double momentY = calculationService.calculateMomentY(actualHeightKm, radius, alfa, length, speed, formName,
                     actualCubesatSize, actualCharacteristicsNtu);
-            double coefficientX = calculationService.calculateCoefficientX(radius, length, formName);
+            double coefficientX = calculationService.calculateCoefficientX(radius, length, formName, alfa);
             double coefficientY = calculationService.calculateCoefficientY(alfa);
             double velocityHead = calculationService.calculateVelocityHead(actualHeightKm, speed);
             double density = calculationService.getDensity(actualHeightKm);
             double minSpeed = calculationService.calculateMinSpeed(actualHeightKm);
+            System.out.println("Плотность " + density);
 
             String strForceX = String.valueOf(forceX);
             String strForceY = String.valueOf(forceY);
@@ -498,6 +503,7 @@ public class Controller {
             aeroChar.setDensity(density);
             aeroChar.setSpeed(speed);
             aeroChar.setMinSpeed(minSpeed);
+            aeroChar.setHeightKm(actualHeightKm);
 
             aerodynamicCharacteristicsRepository.save(aeroChar);
 

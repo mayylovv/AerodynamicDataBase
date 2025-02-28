@@ -58,8 +58,6 @@ public class XmlNameLoader {
             if (!newForms.isEmpty()) {
                 formNtuRepository.saveAll(newForms);
                 System.out.println("Добавлены новые формы: " + newForms);
-            } else {
-                System.out.println("Новых форм для добавления нет.");
             }
         } catch (Exception e) {
             System.err.println("Ошибка обработки XML файла: " + file.getName() + " - " + e.getMessage());

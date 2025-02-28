@@ -49,7 +49,8 @@ CREATE TABLE aero_database.aerodynamic_characteristics(
     date_of_calculation timestamp,
     density float,
     speed float,
-    min_speed float
+    min_speed float,
+    height_km float
 )
 
 

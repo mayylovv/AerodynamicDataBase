@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import static java.lang.Math.cos;
 import static java.lang.Math.pow;
 import static java.lang.Math.sin;
-import static org.example.demo.util.Constant.DENSITY_ON_EARTH;
-import static org.example.demo.util.Constant.SCALE_HEIGHT_ON_EARTH;
+import static org.example.demo.util.Constant.EXP_DECAY_RATE;
+import static org.example.demo.util.Constant.LOG_DENSITY_AT_ZERO;
 
 @Service
 @RequiredArgsConstructor
@@ -19,19 +19,19 @@ public class MainCalculationService {
     private final SpeedCalculator speedCalculator;
     private final AreaCalculator areaCalculator;
 
-    public double calculateForceX(double heightKm, double radius, double length, String formName, double speed) {
+    public double calculateForceX(double heightKm, double radius, double length, double alfa, String formName, double speed) {
         double density = getDensity(heightKm);
-        double coefficientX = calculateCoefficientX(radius, length, formName);
-        double area = calculateArea(formName, radius, length);
+        double coefficientX = calculateCoefficientX(radius, length, formName, alfa);
+        double area = calculateArea(formName, radius, length, alfa);
 
         return 0.5 * density * pow(speed,2) * coefficientX * area;
     }
 
-    public double calculateMomentX(double heightKm, double radius, double length, double speed, String formName, CubesatSize cubesatSize, CharacteristicsNtu charNtu) {
-        double coefficientX = calculateCoefficientX(radius, length, formName);
+    public double calculateMomentX(double heightKm, double radius, double length, double alfa, double speed, String formName, CubesatSize cubesatSize, CharacteristicsNtu charNtu) {
+        double coefficientX = calculateCoefficientX(radius, length, formName, alfa);
         double density = getDensity(heightKm);
-        double midsectionArea = calculateMidsectionArea(radius, formName, length);
-        double levelArm = calculateLevelArm(formName, radius, length, cubesatSize, charNtu);
+        double midsectionArea = calculateMidsectionArea(radius, formName, length, alfa);
+        double levelArm = calculateLevelArm(formName, radius, length, cubesatSize, charNtu, alfa);
 
         return - 0.5 * coefficientX * density * pow(speed, 2) * midsectionArea * levelArm;
     }
@@ -39,7 +39,7 @@ public class MainCalculationService {
     public double calculateForceY(double heightKm, double radius, double length, double alfa, String formName, double speed) {
         double density = getDensity(heightKm);
         double coefficientY = calculateCoefficientY(alfa);
-        double area = calculateArea(formName, radius, length);
+        double area = calculateArea(formName, radius, length, alfa);
 
         return 0.5 * density * pow(speed, 2) * coefficientY * area;
     }
@@ -47,8 +47,8 @@ public class MainCalculationService {
     public double calculateMomentY(double heightKm, double radius, double alfa, double length, double speed, String formName, CubesatSize cubesatSize, CharacteristicsNtu charNtu) {
         double coefficientY = calculateCoefficientY(alfa);
         double density = getDensity(heightKm);
-        double midsectionArea = calculateMidsectionArea(radius, formName, length);
-        double levelArm = calculateLevelArm(formName, radius, length, cubesatSize, charNtu);
+        double midsectionArea = calculateMidsectionArea(radius, formName, length, alfa);
+        double levelArm = calculateLevelArm(formName, radius, length, cubesatSize, charNtu, alfa);
 
         return - 0.5 * coefficientY * density * pow(speed, 2) * midsectionArea * levelArm;
     }
@@ -61,8 +61,8 @@ public class MainCalculationService {
 
     /////////////////////////////////////////////////////////
 
-    public double calculateCoefficientX(double radius, double length, String formName) {
-        return Constant.FREE_MOLECULAR_DRAG_COEFFICIENT * calculateArea(formName, radius, length);
+    public double calculateCoefficientX(double radius, double length, String formName, double alfa) {
+        return Constant.FREE_MOLECULAR_DRAG_COEFFICIENT * calculateArea(formName, radius, length, alfa) / calculateMidsectionArea(radius, formName, length, alfa);
     }
 
     public double calculateCoefficientY(double alfa) {
@@ -73,24 +73,23 @@ public class MainCalculationService {
 
     // тут в кг/м3
     public double getDensity(double heightKm) {
-        double valueExp = - heightKm / (SCALE_HEIGHT_ON_EARTH + 0.06 * heightKm);
-        return DENSITY_ON_EARTH * Math.exp(valueExp);
+        return Math.exp(EXP_DECAY_RATE * heightKm + LOG_DENSITY_AT_ZERO);
     }
 
     public double calculateMinSpeed(double heightKm) {
         return speedCalculator.calculateMinSpeed(heightKm);
     }
 
-    public double calculateLevelArm(String formName, double radius, double length, CubesatSize cubesatSize, CharacteristicsNtu charNtu) {
-        return areaCalculator.calculateLevelArm(formName, radius, length, cubesatSize, charNtu);
+    public double calculateLevelArm(String formName, double radius, double length, CubesatSize cubesatSize, CharacteristicsNtu charNtu, double alfa) {
+        return areaCalculator.calculateLevelArm(formName, radius, length, cubesatSize, charNtu, alfa);
     }
 
-    public double calculateArea(String name, double radius, double length) {
-        return areaCalculator.calculateArea(name, radius, length);
+    public double calculateArea(String name, double radius, double length, double alfa) {
+        return areaCalculator.calculateArea(name, radius, length, alfa);
     }
 
-    public double calculateMidsectionArea(double radius, String formName, double length) {
-        return areaCalculator.calculateMidsectionArea(radius, formName, length);
+    public double calculateMidsectionArea(double radius, String formName, double length, double alfa) {
+        return areaCalculator.calculateMidsectionArea(radius, formName, length, alfa);
     }
 
 }

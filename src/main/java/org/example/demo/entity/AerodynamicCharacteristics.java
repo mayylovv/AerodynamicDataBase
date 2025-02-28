@@ -36,6 +36,7 @@ public class AerodynamicCharacteristics {
     double density;
     double speed;
     double minSpeed;
+    double heightKm;
 
 }
 

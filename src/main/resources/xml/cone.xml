@@ -1,5 +1,5 @@
 <form name="КОНУС">
-    <area>PI * radius * (radius + sqrt(pow(length, 2) + pow(radius, 2)))</area>
+    <area>PI * radius * (radius + sin(alfa) * sqrt(pow(length, 2) + pow(radius, 2)))</area>
     <midsectionArea>PI * pow(radius, 2)</midsectionArea>
     <centrePressureX>cubesatSize.length + length / 3</centrePressureX>
     <centrePressureY>cubesatSize.width / 2</centrePressureY>

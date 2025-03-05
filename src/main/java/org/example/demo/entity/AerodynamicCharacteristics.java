@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity

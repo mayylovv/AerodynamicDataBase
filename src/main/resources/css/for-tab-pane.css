@@ -1,0 +1,21 @@
+.tab-pane {
+    -fx-background-color: lightgray; /* Цвет фона TabPane */
+    -fx-border-color: darkgray; /* Цвет границы TabPane */
+    -fx-border-width: 2; /* Ширина границы */
+}
+
+.tab {
+    -fx-background-color: white; /* Цвет фона вкладки */
+    -fx-text-fill: black; /* Цвет текста на вкладке */
+    -fx-padding: 7 14 7 14; /* Отступы внутри вкладки */
+    -fx-font-size: 12px; /* Размер шрифта */
+}
+
+.tab:selected {
+    -fx-background-color: lightblue; /* Цвет фона выбранной вкладки */
+    -fx-text-fill: white; /* Цвет текста выбранной вкладки */
+}
+
+.tab:hover {
+    -fx-background-color: lightblue; /* Цвет фона вкладки при наведении */
+}

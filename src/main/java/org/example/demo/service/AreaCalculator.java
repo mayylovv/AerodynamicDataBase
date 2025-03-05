@@ -64,7 +64,7 @@ public class AreaCalculator {
         double y = evaluateFormula(formulaY, radius, length, 0, cubesatSize.getWidth(), 0, alfa);
         double z = evaluateFormula(formulaZ, radius, length, 0, 0, cubesatSize.getHeight(), alfa);
 
-        double shellNtu = evaluateFormula(FormulaLoader.loadFormula(formName, "shellNtu"), radius, length, 0, 0, 0, alfa);
+        double shellNtu = calculateShellNtu(formName, radius, length, alfa);
         double massCs = cubesatSize.getMass();
         double massArea = materialOfNtu.getDensity() * characteristicsNtu.getThickness() * pow(10, -6) * shellNtu;
 
@@ -73,6 +73,10 @@ public class AreaCalculator {
                 (massCs * y + massArea * y) / (massCs + massArea),
                 (massCs * z + massArea * z) / (massCs + massArea)
         };
+    }
+
+    public double calculateShellNtu(String formName, double radius, double length, double alfa) {
+        return evaluateFormula(FormulaLoader.loadFormula(formName, "shellNtu"), radius, length, 0, 0, 0, alfa);
     }
 
 

@@ -1,6 +1,5 @@
 package org.example.demo.repository;
 
-import org.example.demo.dto.NtuTableDto;
 import org.example.demo.entity.FormNtu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -12,10 +12,12 @@ public interface CubesatSizeRepository extends JpaRepository<CubesatSize, Intege
 
     Optional<CubesatSize> findByName(String name);
 
+    Boolean existsByName(String name);
+
     @Query(DELETE_BY_NAME)
     void removeByName(String name);
 
-    String DELETE_BY_NAME= """
+    String DELETE_BY_NAME = """
             SELECT
                 ntu.id,
                 ntu.name,

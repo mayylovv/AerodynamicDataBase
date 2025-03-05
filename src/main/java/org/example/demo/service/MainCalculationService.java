@@ -24,7 +24,7 @@ public class MainCalculationService {
         double coefficientX = calculateCoefficientX(radius, length, formName, alfa);
         double area = calculateArea(formName, radius, length, alfa);
 
-        return 0.5 * density * pow(speed,2) * coefficientX * area;
+        return 0.5 * density * pow(speed, 2) * coefficientX * area;
     }
 
     public double calculateMomentX(double heightKm, double radius, double length, double alfa, double speed, String formName, CubesatSize cubesatSize, CharacteristicsNtu charNtu) {
@@ -33,7 +33,7 @@ public class MainCalculationService {
         double midsectionArea = calculateMidsectionArea(radius, formName, length, alfa);
         double levelArm = calculateLevelArm(formName, radius, length, cubesatSize, charNtu, alfa);
 
-        return - 0.5 * coefficientX * density * pow(speed, 2) * midsectionArea * levelArm;
+        return -0.5 * coefficientX * density * pow(speed, 2) * midsectionArea * levelArm;
     }
 
     public double calculateForceY(double heightKm, double radius, double length, double alfa, String formName, double speed) {
@@ -50,7 +50,7 @@ public class MainCalculationService {
         double midsectionArea = calculateMidsectionArea(radius, formName, length, alfa);
         double levelArm = calculateLevelArm(formName, radius, length, cubesatSize, charNtu, alfa);
 
-        return - 0.5 * coefficientY * density * pow(speed, 2) * midsectionArea * levelArm;
+        return -0.5 * coefficientY * density * pow(speed, 2) * midsectionArea * levelArm;
     }
 
     public double calculateVelocityHead(double heightKm, double speed) {
@@ -90,6 +90,20 @@ public class MainCalculationService {
 
     public double calculateMidsectionArea(double radius, String formName, double length, double alfa) {
         return areaCalculator.calculateMidsectionArea(radius, formName, length, alfa);
+    }
+
+    public double calculateFullMass(CubesatSize cubesatSize, CharacteristicsNtu charNtu, double alfa) {
+        String formName = charNtu.getForm().getFileName();
+        double radius = charNtu.getRadius();
+        double length = charNtu.getLength();
+        double materialDensity = charNtu.getMaterial().getDensity();
+        double shellNtu = areaCalculator.calculateShellNtu(formName, radius, length, alfa);
+
+        double massCubesat = cubesatSize.getMass();
+        double massNtu = materialDensity * charNtu.getThickness() * pow(10, -6) * shellNtu;
+
+        return massNtu + massCubesat;
+
     }
 
 }

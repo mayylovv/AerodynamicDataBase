@@ -30,6 +30,7 @@ dependencies {
 	implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.0") // API JAXB
 	implementation("org.glassfish.jaxb:jaxb-runtime:4.0.4") // Runtime для JAXB
 	implementation("net.objecthunter:exp4j:0.4.8")
+	implementation("org.apache.commons:commons-math3:3.6.1")
 }
 
 application {

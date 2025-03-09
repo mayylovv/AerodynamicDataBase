@@ -103,7 +103,5 @@ public class MainCalculationService {
         double massNtu = materialDensity * charNtu.getThickness() * pow(10, -6) * shellNtu;
 
         return massNtu + massCubesat;
-
     }
-
 }

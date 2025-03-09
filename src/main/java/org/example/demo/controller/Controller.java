@@ -23,12 +23,13 @@ import org.example.demo.entity.AerodynamicCharacteristics;
 import org.example.demo.entity.CharacteristicsNtu;
 import org.example.demo.entity.CubesatSize;
 import org.example.demo.entity.MaterialInfoEntity;
-import org.example.demo.math.ReentrySimulation;
+import org.example.demo.math.OrbitalDescentCalculator;
 import org.example.demo.repository.AerodynamicCharacteristicsRepository;
 import org.example.demo.repository.CharacteristicsNtuRepository;
 import org.example.demo.repository.CubesatSizeRepository;
 import org.example.demo.repository.FormNtuRepository;
 import org.example.demo.repository.MaterialInfoRepository;
+import org.example.demo.service.AreaCalculator;
 import org.example.demo.service.MainCalculationService;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +38,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static org.example.demo.util.Constant.ACCELERATION_OF_GRAVITY;
+import static org.example.demo.util.Constant.EARTH_RADIUS;
+import static org.example.demo.util.Constant.RADIUS_EARTH;
+import static org.example.demo.util.Constant.VELOCITY_OF_EARTH;
 
 @Component
 @RequiredArgsConstructor
@@ -48,7 +54,7 @@ public class Controller {
     private final CharacteristicsNtuRepository characteristicsNtuRepository;
     private final MainCalculationService calculationService;
     private final AerodynamicCharacteristicsRepository aerodynamicCharacteristicsRepository;
-    private final ReentrySimulation reentrySimulation;
+    private final AreaCalculator areaCalculator;
 
     private CubesatSize actualCubesatSize;
     private CharacteristicsNtu actualCharacteristicsNtu;
@@ -397,7 +403,7 @@ public class Controller {
             startHeightTime = convertStringToDouble(startHeight);
             endHeightTime = convertStringToDouble(endHeight);
             actualAlfaTime = convertStringToDoubleWithMinus(alfa);
-            theta0Time = convertStringToDoubleWithMinus(alfa);
+            theta0Time = convertStringToDoubleWithMinus(theta0);
             actualSpeedTime = convertStringToDouble(speed);
 
             FlightCharacteristicsForTime flightCharacteristics = new FlightCharacteristicsForTime();
@@ -445,6 +451,7 @@ public class Controller {
             double coefficientY = calculationService.calculateCoefficientY(alfa);
             double velocityHead = calculationService.calculateVelocityHead(actualHeightKm, speed);
             double density = calculationService.getDensity(actualHeightKm);
+            System.out.println("density = " + density);
             double minSpeed = calculationService.calculateMinSpeed(actualHeightKm);
             System.out.println("Плотность " + density);
 
@@ -482,25 +489,32 @@ public class Controller {
             double length = actualCharacteristicsNtu.getLength();
             String formName = actualCharacteristicsNtu.getForm().getFileName();
 
-            double startHeight = startHeightTime * 1000;
-            double endHeight = endHeightTime * 1000;
+            double startHeight = startHeightTime * 1000 + EARTH_RADIUS;
+            double endHeight = endHeightTime * 1000 + EARTH_RADIUS;
             double speed = actualSpeedTime;
             double theta0 = theta0Time * (Math.PI / 180);
             double alfa = actualAlfaTime * (Math.PI / 180);
+            double g_r = ACCELERATION_OF_GRAVITY;
+            double Omega = VELOCITY_OF_EARTH;
 
-            double forceX = calculationService.calculateForceX(actualHeightKm, radius, length, alfa, formName, speed);
-            double forceY = calculationService.calculateForceY(actualHeightKm, radius, length, alfa, formName, speed);
             double mass = calculationService.calculateFullMass(actualCubesatSize, actualCharacteristicsNtu, alfa);
 
-            //double landTime = reentrySimulation.calculateTime(startHeight, endHeight, speed, theta0, forceX, forceY, mass);
-            double landTime = 15;
+            double coefficientX = calculationService.calculateCoefficientX(radius, length, formName, alfa);
+            coefficientX = Math.max(coefficientX, 1e-6);
+            double coefficientY = calculationService.calculateCoefficientY(alfa);
+            coefficientY = Math.max(coefficientY, 1e-6);
 
-            String strStartHeight = String.valueOf(startHeight);
-            String strEndHeight = String.valueOf(endHeight);
-            String strTheta0 = String.valueOf(theta0);
+            double area = areaCalculator.calculateArea(formName, radius, length, alfa);
+
+            OrbitalDescentCalculator calculator = new OrbitalDescentCalculator(startHeight, endHeight, speed, theta0, mass, g_r, Omega, coefficientX, coefficientY, area);
+
+            double landTime = calculator.calculateDescentTime();
+
+            String strStartHeight = String.valueOf((startHeight - EARTH_RADIUS) / 1000);
+            String strEndHeight = String.valueOf((endHeight - RADIUS_EARTH) / 1000);
             String strLandTime = String.valueOf(landTime);
 
-            timeResultTextArea.setText(String.format(resultTime, strStartHeight, strEndHeight, strTheta0, strLandTime));
+            timeResultTextArea.setText(String.format(resultTime, strStartHeight, strEndHeight, strLandTime));
         }
 
     }
@@ -632,9 +646,7 @@ public class Controller {
             """;
 
     private String resultTime = """
-            Время спуска с орбиты %s
-            на орбиту %s
-            при начальном угле наклона траектории %s
-            составило t = %s секунд
+            Время спуска с орбиты %s км на орбиту %s км
+            составило t = %s часов
             """;
 }

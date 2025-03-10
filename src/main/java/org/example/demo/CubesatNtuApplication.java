@@ -15,6 +15,7 @@ import java.util.Objects;
 @SpringBootApplication
 public class CubesatNtuApplication extends Application {
 
+    // тест
     private static ConfigurableApplicationContext springContext;
     private FXMLLoader fxmlLoader;
 

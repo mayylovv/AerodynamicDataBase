@@ -5,7 +5,7 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class FlightCharacteristicsForTime {
+public class OrbitCharacteristicsTimeDto {
 
     double startHeight;
     double endHeight;

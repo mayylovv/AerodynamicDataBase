@@ -1,5 +1,6 @@
 package org.example.demo.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,8 +9,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -21,21 +20,22 @@ public class AerodynamicCharacteristics {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-    double alfa;
     int cubesatSizeId;
     int ntuId;
+    int orbitId;
+    @Column(name = "force_x")
     double forceX;
+    @Column(name = "moment_x")
     double momentX;
+    @Column(name = "coefficient_x")
     double coefficientX;
+    @Column(name = "force_y")
     double forceY;
+    @Column(name = "moment_y")
     double momentY;
+    @Column(name = "coefficient_y")
     double coefficientY;
     double velocityHead;
-    LocalDateTime dateOfCalculation;
-    double density;
-    double speed;
-    double minSpeed;
-    double heightKm;
 
 }
 

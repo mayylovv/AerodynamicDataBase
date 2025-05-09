@@ -144,7 +144,8 @@ public class OrbitalDescentCalculator {
         private double stopTime = Double.NaN;
 
         @Override
-        public void init(double t0, double[] y0, double t) {}
+        public void init(double t0, double[] y0, double t) {
+        }
 
         @Override
         public double g(double t, double[] y) {
@@ -158,7 +159,8 @@ public class OrbitalDescentCalculator {
         }
 
         @Override
-        public void resetState(double t, double[] y) {}
+        public void resetState(double t, double[] y) {
+        }
 
         public double getStopTime() {
             return stopTime;

@@ -10,31 +10,35 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import lombok.RequiredArgsConstructor;
-import org.example.demo.dto.FlightCharacteristics;
-import org.example.demo.dto.FlightCharacteristicsForTime;
+import org.example.demo.dto.AerodynamicCharacteristicsDto;
 import org.example.demo.dto.NtuTableDto;
+import org.example.demo.dto.TimeCharacteristicsDto;
 import org.example.demo.entity.AerodynamicCharacteristics;
 import org.example.demo.entity.CharacteristicsNtu;
 import org.example.demo.entity.CubesatSize;
 import org.example.demo.entity.MaterialInfoEntity;
+import org.example.demo.entity.OrbitCharacteristics;
+import org.example.demo.entity.OrbitCharacteristicsTime;
+import org.example.demo.entity.TimeCharacteristics;
 import org.example.demo.math.OrbitalDescentCalculator;
 import org.example.demo.repository.AerodynamicCharacteristicsRepository;
 import org.example.demo.repository.CharacteristicsNtuRepository;
 import org.example.demo.repository.CubesatSizeRepository;
 import org.example.demo.repository.FormNtuRepository;
 import org.example.demo.repository.MaterialInfoRepository;
+import org.example.demo.repository.OrbitCharacteristicsRepository;
+import org.example.demo.repository.OrbitCharacteristicsTimeRepository;
+import org.example.demo.repository.TimeCharacteristicsRepository;
 import org.example.demo.service.AreaCalculator;
 import org.example.demo.service.MainCalculationService;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -53,22 +57,14 @@ public class Controller {
     private final FormNtuRepository formNtuRepository;
     private final CharacteristicsNtuRepository characteristicsNtuRepository;
     private final MainCalculationService calculationService;
-    private final AerodynamicCharacteristicsRepository aerodynamicCharacteristicsRepository;
+    private final AerodynamicCharacteristicsRepository aeroCharRepository;
     private final AreaCalculator areaCalculator;
+    private final OrbitCharacteristicsRepository orbitCharacteristicsRepository;
+    private final OrbitCharacteristicsTimeRepository orbitCharacteristicsTimeRepository;
+    private final TimeCharacteristicsRepository timeCharacteristicsRepository;
 
     private CubesatSize actualCubesatSize;
     private CharacteristicsNtu actualCharacteristicsNtu;
-    private double actualHeightKm;
-    private double actualAlfa;
-    private double actualSpeed;
-    private FlightCharacteristics actualFlightChar;
-    private FlightCharacteristicsForTime actualFlightCharForTime;
-
-    private double actualAlfaTime;
-    private double actualSpeedTime;
-    private double theta0Time;
-    private double startHeightTime;
-    private double endHeightTime;
 
     @FXML
     private TableView<NtuTableDto> ntuTableView;
@@ -89,6 +85,21 @@ public class Controller {
     private TableColumn<CubesatSize, Double> lengthColumn, widthColumn, heightColumn, xMassColumn, yMassColumn, zMassColumn, massColumn;
 
     @FXML
+    private TableView<OrbitCharacteristics> orbitaTableView;
+
+    @FXML
+    private TableColumn<OrbitCharacteristics, Double> orbitColumn, speedColumn, alfaColumn;
+
+    @FXML
+    private TableView<OrbitCharacteristicsTime> orbitaTimeTableView;
+
+    @FXML
+    private TableColumn<OrbitCharacteristicsTime, Integer> calculationIdChColumn;
+
+    @FXML
+    private TableColumn<OrbitCharacteristicsTime, Double> initialOrbitColumn, finalOrbitColumn, speedTimeColumn, alfaTimeColumn, gammaTimeColumn;
+
+    @FXML
     private TableView<MaterialInfoEntity> materialTableView;
 
     @FXML
@@ -98,34 +109,53 @@ public class Controller {
     private TableColumn<MaterialInfoEntity, Double> densityMaterialColumn;
 
     @FXML
-    private Button chooseFlight, chooseTimeFlight;
+    private TableView<AerodynamicCharacteristicsDto> aeroCharTableView;
 
     @FXML
-    private Button addCubesat, addNtu, addMaterial;
+    private TableColumn<AerodynamicCharacteristicsDto, String> cubesatColumn, ntuColumn;
+
+    @FXML
+    private TableColumn<AerodynamicCharacteristicsDto, Double> orbitChColumn, speedChColumn, alfaChColumn, forceXColumn;
+
+    @FXML
+    private TableColumn<AerodynamicCharacteristicsDto, Double> coefficientXColumn, momentXColumn, forceYColumn;
+
+    @FXML
+    private TableColumn<AerodynamicCharacteristicsDto, Double> coefficientYColumn, momentYColumn, velocityHeadColumn;
+
+    @FXML
+    private TableView<TimeCharacteristicsDto> timeCharTableView;
+
+    @FXML
+    private TableColumn<TimeCharacteristicsDto, Integer> calculationIdColumn;
+
+    @FXML
+    private TableColumn<TimeCharacteristicsDto, String> cubesatTimeColumn, ntuTimeColumn;
+
+    @FXML
+    private TableColumn<TimeCharacteristicsDto, Double> initOrbitColumn, finOrbitColumn, speedTimeChColumn, alfaTimeChColumn, gammaTimeChColumn, landTimeColumn;
+
+    @FXML
+    private Button addCubesat, addNtu, addMaterial, addOrbitButton, addOrbitTimeButton;
 
     @FXML
     private Button calculateButton, calculateTimeButton;
 
     @FXML
-    private Button deleteCubesatButton, deleteNtuButton, deleteMaterialButton;
-
-
-    @FXML
-    private TextField heightFlight, speedFlight, angleFlight;
+    private Button deleteCubesatButton, deleteNtuButton, deleteMaterialButton, deleteOrbitButton, deleteOrbitTimeButton;
 
     @FXML
-    private TextField startHeightField, endHeightField, theta0Field, speedTimeField, angleTimeField;
+    private Button deleteAeroButton, deleteTimeButton;
 
     // условно логи
     @FXML
-    private Label flightLog, cubesatLog, ntuLog, materialLog;
+    private Label cubesatLog, ntuLog, materialLog, orbitLog, orbitTimeLog;
 
     @FXML
-    private Label chosenCubesat, chosenNtu;
+    private Label chosenCubesat, chosenNtu, chosenOrbit, chosenOrbitTime;
 
-    // информация с характеристиками полета
     @FXML
-    private TextArea flightArea, flightTimeArea;
+    private Label chosenAeroCharLog, chosenTimeCharLog;
 
     @FXML
     private TextArea resultTextArea, timeResultTextArea;
@@ -138,7 +168,7 @@ public class Controller {
     public void initialize() {
         setupTableColumns();
         loadTableData();
-        Image image = new Image("pictures/schema.png"); // укажите правильный путь к изображению
+        Image image = new Image("pictures/schema.png");
         firstImage.setImage(image);
 
         cubesatTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -168,40 +198,53 @@ public class Controller {
                 Image imageForm = new Image(url);
                 secondImage.setImage(imageForm);
             } else {
-                secondImage.setImage(null); // Сбросить изображение, если ничего не выбрано
+                secondImage.setImage(null);
                 chosenNtu.setText(null);
             }
         });
-
+        orbitaTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                double orbit = newSelection.getOrbit();
+                double speed = newSelection.getSpeed();
+                double alfa = newSelection.getAlfa();
+                chosenOrbit.setText(String.format(orbitChosen, orbit, speed, alfa));
+            } else {
+                chosenOrbit.setText(null);
+            }
+        });
+        orbitaTimeTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                double initOrbit = newSelection.getInitialOrbit();
+                double finalOrbit = newSelection.getFinalOrbit();
+                double speed = newSelection.getSpeed();
+                double alfa = newSelection.getAlfa();
+                double gamma = newSelection.getGamma();
+                chosenOrbitTime.setText(String.format(orbitTimeChosen, initOrbit, finalOrbit, speed, alfa, gamma));
+            } else {
+                chosenOrbitTime.setText(null);
+            }
+        });
     }
 
-    private final String cubesatChosen = "Длина - %s м, Ширина - %s м, Высота - %s м";
-    private final String ntuChosen = "Длина - %s м, Радиус - %s м";
-    private final String ntuChosenWithoutLength = "Радиус - %s м";
-
     @FXML
-    public void saveNewCubesat() throws IOException {
+    public void saveNewCubesat() {
         try {
-            // Загружаем FXML-файл для нового окна
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/save-cubesat.fxml"));
             loader.setControllerFactory(param -> new NewCubesatController(cubesatSizeRepository));
             Parent root = loader.load();
 
-            // Получаем контроллер для нового окна
             NewCubesatController newCubesatController = loader.getController();
 
-            // Создаем новое окно (Stage)
             Stage stage = new Stage();
             stage.setTitle("Новый Cubesat");
             stage.setScene(new Scene(root));
             try {
                 Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png")));
-                stage.getIcons().add(icon); // Устанавливаем иконку для окна
+                stage.getIcons().add(icon);
             } catch (Exception e) {
                 System.err.println("Ошибка загрузки иконки: " + e.getMessage());
             }
 
-            // Передаем Stage в контроллер
             newCubesatController.setStage(stage);
 
             stage.setOnHidden(event -> {
@@ -209,7 +252,6 @@ public class Controller {
                 cubesatTableView.setItems(FXCollections.observableArrayList(cubesatData));
             });
 
-            // Отображаем окно
             stage.show();
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -223,11 +265,11 @@ public class Controller {
             String cubesatName = cubesatTableView.getSelectionModel().getSelectedItem().getName();
             CubesatSize cubesatSize = cubesatSizeRepository.findByName(cubesatName).get();
 
-            List<AerodynamicCharacteristics> listAeroChar = aerodynamicCharacteristicsRepository.findAllByCubesatSizeId(cubesatSize.getId());
-            aerodynamicCharacteristicsRepository.deleteAll(listAeroChar);
+            List<AerodynamicCharacteristics> listAeroChar = aeroCharRepository.findAllByCubesatSizeId(cubesatSize.getId());
+            aeroCharRepository.deleteAll(listAeroChar);
 
             cubesatSizeRepository.delete(cubesatSize);
-            cubesatLog.setText("Запись с name " + cubesatName + " успешно удалена"); //
+            cubesatLog.setText("Запись с name " + cubesatName + " успешно удалена");
 
             List<CubesatSize> cubesatData = cubesatSizeRepository.findAll();
             cubesatTableView.setItems(FXCollections.observableArrayList(cubesatData));
@@ -240,35 +282,30 @@ public class Controller {
     @FXML
     public void saveNewNtu() {
         try {
-            // Загружаем FXML-файл для нового окна
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/save-ntu.fxml"));
             loader.setControllerFactory(param -> new NewNtuController(characteristicsNtuRepository, formNtuRepository,
                     materialInfoRepository));
             Parent root = loader.load();
 
-            // Получаем контроллер для нового окна
             NewNtuController newNtuController = loader.getController();
 
-            // Создаем новое окно (Stage)
             Stage stage = new Stage();
             stage.setTitle("Новая оболочка");
             stage.setScene(new Scene(root));
             try {
                 Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png")));
-                stage.getIcons().add(icon); // Устанавливаем иконку для окна
+                stage.getIcons().add(icon);
             } catch (Exception e) {
                 System.err.println("Ошибка загрузки иконки: " + e.getMessage());
             }
 
-            // Передаем Stage в контроллер
             newNtuController.setStage(stage);
 
             stage.setOnHidden(event -> {
-                List<NtuTableDto> ntuData = getAllForTable();
+                List<NtuTableDto> ntuData = getAllForNtuTable();
                 ntuTableView.setItems(FXCollections.observableArrayList(ntuData));
             });
 
-            // Отображаем окно
             stage.show();
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -282,13 +319,13 @@ public class Controller {
             String ntuName = ntuTableView.getSelectionModel().getSelectedItem().getName();
             CharacteristicsNtu ntu = characteristicsNtuRepository.findByName(ntuName).get();
 
-            List<AerodynamicCharacteristics> listAeroChar = aerodynamicCharacteristicsRepository.findAllByNtuId(ntu.getId());
-            aerodynamicCharacteristicsRepository.deleteAll(listAeroChar);
+            List<AerodynamicCharacteristics> listAeroChar = aeroCharRepository.findAllByNtuId(ntu.getId());
+            aeroCharRepository.deleteAll(listAeroChar);
             characteristicsNtuRepository.delete(ntu);
 
             ntuLog.setText("Запись с name " + ntuName + " успешно удалена");
 
-            List<NtuTableDto> ntuData = getAllForTable();
+            List<NtuTableDto> ntuData = getAllForNtuTable();
             ntuTableView.setItems(FXCollections.observableArrayList(ntuData));
 
         } catch (Exception e) {
@@ -297,29 +334,131 @@ public class Controller {
     }
 
     @FXML
+    private void saveOrbit() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/save-orbit.fxml"));
+            loader.setControllerFactory(param -> new NewOrbitController(orbitCharacteristicsRepository));
+            Parent root = loader.load();
+
+            NewOrbitController newOrbitController = loader.getController();
+
+            Stage stage = new Stage();
+            stage.setTitle("Добавить новые данные");
+            stage.setScene(new Scene(root));
+
+            try {
+                Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png")));
+                stage.getIcons().add(icon);
+            } catch (Exception e) {
+                System.err.println("Ошибка загрузки иконки: " + e.getMessage());
+            }
+            newOrbitController.setStage(stage);
+
+            stage.setOnHidden(event -> {
+                List<OrbitCharacteristics> orbitCharacteristics = orbitCharacteristicsRepository.findAll();
+                orbitaTableView.setItems(FXCollections.observableArrayList(orbitCharacteristics));
+            });
+            stage.show();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            orbitLog.setText("Не удалось добавить по неизвестной причине");
+        }
+    }
+
+    @FXML
+    private void deleteOrbit() {
+        try {
+            double orbit = orbitaTableView.getSelectionModel().getSelectedItem().getOrbit();
+            double speed = orbitaTableView.getSelectionModel().getSelectedItem().getSpeed();
+            double alfa = orbitaTableView.getSelectionModel().getSelectedItem().getAlfa();
+            List<OrbitCharacteristics> orbitCharacteristics =
+                    orbitCharacteristicsRepository.findAllByOrbitAndSpeedAndAlfa(orbit, speed, alfa);
+            orbitCharacteristicsRepository.deleteAll(orbitCharacteristics);
+            orbitLog.setText("Успешно удалено");
+
+            List<OrbitCharacteristics> orbitChar = orbitCharacteristicsRepository.findAll();
+            orbitaTableView.setItems(FXCollections.observableArrayList(orbitChar));
+
+        } catch (Exception e) {
+            orbitLog.setText("Запись не удалена по неизвестной причине");
+        }
+    }
+
+    @FXML
+    private void saveOrbitTime() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/save-orbit-time.fxml"));
+            loader.setControllerFactory(param -> new NewOrbitTimeController(orbitCharacteristicsTimeRepository));
+            Parent root = loader.load();
+
+            NewOrbitTimeController newOrbitTimeController = loader.getController();
+
+            Stage stage = new Stage();
+            stage.setTitle("Добавить новые данные");
+            stage.setScene(new Scene(root));
+
+            try {
+                Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png")));
+                stage.getIcons().add(icon);
+            } catch (Exception e) {
+                System.err.println("Ошибка загрузки иконки: " + e.getMessage());
+            }
+            newOrbitTimeController.setStage(stage);
+
+            stage.setOnHidden(event -> {
+                List<OrbitCharacteristicsTime> orbitCharacteristics = orbitCharacteristicsTimeRepository.findAll();
+                orbitaTimeTableView.setItems(FXCollections.observableArrayList(orbitCharacteristics));
+            });
+            stage.show();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            orbitTimeLog.setText("Не удалось добавить по неизвестной причине");
+        }
+    }
+
+    @FXML
+    private void deleteOrbitTime() {
+        try {
+            double initOrbit = orbitaTimeTableView.getSelectionModel().getSelectedItem().getInitialOrbit();
+            double finalOrbit = orbitaTimeTableView.getSelectionModel().getSelectedItem().getFinalOrbit();
+            double speed = orbitaTimeTableView.getSelectionModel().getSelectedItem().getSpeed();
+            double alfa = orbitaTimeTableView.getSelectionModel().getSelectedItem().getAlfa();
+            double gamma = orbitaTimeTableView.getSelectionModel().getSelectedItem().getGamma();
+            List<OrbitCharacteristicsTime> orbitCharacteristics =
+                    orbitCharacteristicsTimeRepository.findAllByInitialOrbitAndFinalOrbitAndSpeedAndAlfaAndGamma(
+                            initOrbit, finalOrbit, speed, alfa, gamma
+                    );
+            orbitCharacteristicsTimeRepository.deleteAll(orbitCharacteristics);
+            orbitTimeLog.setText("Успешно удалено");
+
+            List<OrbitCharacteristicsTime> orbitChar = orbitCharacteristicsTimeRepository.findAll();
+            orbitaTimeTableView.setItems(FXCollections.observableArrayList(orbitChar));
+
+        } catch (Exception e) {
+            orbitTimeLog.setText("Запись не удалена по неизвестной причине");
+        }
+    }
+
+    @FXML
     private void saveNewMaterial() {
         try {
-            // Загружаем FXML-файл для нового окна
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/save-material.fxml"));
             loader.setControllerFactory(param -> new NewMaterialController(materialInfoRepository));
             Parent root = loader.load();
 
-            // Получаем контроллер для нового окна
             NewMaterialController newMaterialController = loader.getController();
 
-            // Создаем новое окно (Stage)
             Stage stage = new Stage();
             stage.setTitle("Новый материал");
             stage.setScene(new Scene(root));
 
             try {
                 Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png")));
-                stage.getIcons().add(icon); // Устанавливаем иконку для окна
+                stage.getIcons().add(icon);
             } catch (Exception e) {
                 System.err.println("Ошибка загрузки иконки: " + e.getMessage());
             }
 
-            // Передаем Stage в контроллер
             newMaterialController.setStage(stage);
 
             stage.setOnHidden(event -> {
@@ -327,7 +466,6 @@ public class Controller {
                 materialTableView.setItems(FXCollections.observableArrayList(materialData));
             });
 
-            // Отображаем окно
             stage.show();
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -344,8 +482,8 @@ public class Controller {
             List<Integer> ntuIds = ntus.stream()
                     .map(CharacteristicsNtu::getId)
                     .toList();
-            List<AerodynamicCharacteristics> listAeroChar = aerodynamicCharacteristicsRepository.findAllByNtuIdIn(ntuIds);
-            aerodynamicCharacteristicsRepository.deleteAll(listAeroChar);
+            List<AerodynamicCharacteristics> listAeroChar = aeroCharRepository.findAllByNtuIdIn(ntuIds);
+            aeroCharRepository.deleteAll(listAeroChar);
             characteristicsNtuRepository.deleteAll(ntus);
             materialInfoRepository.delete(material);
             materialLog.setText("Запись с name " + materialName + " успешно удалена");
@@ -354,105 +492,53 @@ public class Controller {
             List<MaterialInfoEntity> materialData = materialInfoRepository.findAll();
             materialTableView.setItems(FXCollections.observableArrayList(materialData));
 
-            List<NtuTableDto> ntuData = getAllForTable();
+            List<NtuTableDto> ntuData = getAllForNtuTable();
             ntuTableView.setItems(FXCollections.observableArrayList(ntuData));
 
         } catch (Exception e) {
             materialLog.setText("Запись " + materialTableView.getSelectionModel().getSelectedItem().getName()
-                    + "не удалена по неизвестной причине");
+                                + "не удалена по неизвестной причине");
         }
     }
-
-
-    @FXML
-    private void chooseFlightChar() {
-        String heightKm = heightFlight.getText();
-        String alfa = angleFlight.getText();
-        String speed = speedFlight.getText();
-        if (heightKm.isBlank() || alfa.isBlank() || speed.isBlank()) {
-            flightLog.setText("Заполнены не все поля");
-            return;
-        }
-        try {
-            actualHeightKm = convertStringToDouble(heightKm);
-            actualAlfa = convertStringToDoubleWithMinus(alfa);
-            actualSpeed = convertStringToDouble(speed);
-            FlightCharacteristics flightCharacteristics = new FlightCharacteristics();
-            flightCharacteristics.setHeightKm(actualHeightKm);
-            flightCharacteristics.setAlfa(actualAlfa);
-            flightCharacteristics.setSpeed(actualSpeed);
-            actualFlightChar = flightCharacteristics;
-            flightArea.setText(String.format(flightChar, actualHeightKm, actualAlfa, actualSpeed));
-        } catch (NumberFormatException e) {
-            flightLog.setText("Некорректный формат данных");
-        }
-    }
-
-    @FXML
-    private void chooseFlightCharForTime() {
-        String startHeight = startHeightField.getText();
-        String endHeight = endHeightField.getText();
-        String speed = speedTimeField.getText();
-        String alfa = angleTimeField.getText();
-        String theta0 = theta0Field.getText();
-        if (startHeight.isBlank() || endHeight.isBlank() || theta0.isBlank() || alfa.isBlank() || speed.isBlank()) {
-            flightLog.setText("Заполнены не все поля");
-            return;
-        }
-        try {
-            startHeightTime = convertStringToDouble(startHeight);
-            endHeightTime = convertStringToDouble(endHeight);
-            actualAlfaTime = convertStringToDoubleWithMinus(alfa);
-            theta0Time = convertStringToDoubleWithMinus(theta0);
-            actualSpeedTime = convertStringToDouble(speed);
-
-            FlightCharacteristicsForTime flightCharacteristics = new FlightCharacteristicsForTime();
-            flightCharacteristics.setStartHeight(startHeightTime);
-            flightCharacteristics.setEndHeight(endHeightTime);
-            flightCharacteristics.setAlfa(actualAlfaTime);
-            flightCharacteristics.setTheta0(theta0Time);
-            flightCharacteristics.setSpeed(actualSpeedTime);
-            actualFlightCharForTime = flightCharacteristics;
-            flightTimeArea.setText(String.format(flightTimeChar, startHeightTime, endHeightTime, actualSpeedTime, actualAlfaTime, theta0Time));
-        } catch (NumberFormatException e) {
-            flightLog.setText("Некорректный формат данных");
-        }
-
-    }
-
 
     @FXML
     private void calculate() {
+        OrbitCharacteristics orbitChar;
         try {
             String cubesatName = cubesatTableView.getSelectionModel().getSelectedItem().getName();
             actualCubesatSize = cubesatSizeRepository.findByName(cubesatName).get();
             String charNtuName = ntuTableView.getSelectionModel().getSelectedItem().getName();
             actualCharacteristicsNtu = characteristicsNtuRepository.findByName(charNtuName).get();
+            double orbit = orbitaTableView.getSelectionModel().getSelectedItem().getOrbit();
+            double speed = orbitaTableView.getSelectionModel().getSelectedItem().getSpeed();
+            double alfa = orbitaTableView.getSelectionModel().getSelectedItem().getAlfa();
+            orbitChar = orbitCharacteristicsRepository.findAllByOrbitAndSpeedAndAlfa(orbit, speed, alfa).stream().findFirst().get();
+
         } catch (NullPointerException e) {
             resultTextArea.setText("Не все поля заполнены");
             return;
         }
-        if (actualCharacteristicsNtu == null || actualCubesatSize == null || actualFlightChar == null) {
+        if (actualCharacteristicsNtu == null || actualCubesatSize == null || orbitChar == null) {
             resultTextArea.setText("Не все поля заполнены");
         } else {
-            double alfa = actualAlfa * (Math.PI / 180); // тут радианы
-            double speed = actualSpeed; // тут метры в секунду
+            double alfa = orbitChar.getAlfa() * (Math.PI / 180); // тут радианы
+            double speed = orbitChar.getSpeed(); // тут метры в секунду
+            double height = orbitChar.getOrbit();
             double radius = actualCharacteristicsNtu.getRadius();
             double length = actualCharacteristicsNtu.getLength();
             String formName = actualCharacteristicsNtu.getForm().getFileName();
 
-            double forceX = calculationService.calculateForceX(actualHeightKm, radius, length, alfa, formName, speed);
-            double forceY = calculationService.calculateForceY(actualHeightKm, radius, length, alfa, formName, speed);
-            double momentX = calculationService.calculateMomentX(actualHeightKm, radius, length, alfa, speed, formName,
+            double forceX = calculationService.calculateForceX(height, radius, length, alfa, formName, speed);
+            double forceY = calculationService.calculateForceY(height, radius, length, alfa, formName, speed);
+            double momentX = calculationService.calculateMomentX(height, radius, length, alfa, speed, formName,
                     actualCubesatSize, actualCharacteristicsNtu);
-            double momentY = calculationService.calculateMomentY(actualHeightKm, radius, alfa, length, speed, formName,
+            double momentY = calculationService.calculateMomentY(height, radius, alfa, length, speed, formName,
                     actualCubesatSize, actualCharacteristicsNtu);
             double coefficientX = calculationService.calculateCoefficientX(radius, length, formName, alfa);
             double coefficientY = calculationService.calculateCoefficientY(alfa);
-            double velocityHead = calculationService.calculateVelocityHead(actualHeightKm, speed);
-            double density = calculationService.getDensity(actualHeightKm);
+            double velocityHead = calculationService.calculateVelocityHead(height, speed);
+            double density = calculationService.getDensity(height);
             System.out.println("density = " + density);
-            double minSpeed = calculationService.calculateMinSpeed(actualHeightKm);
             System.out.println("Плотность " + density);
 
             String strForceX = String.valueOf(forceX);
@@ -467,33 +553,44 @@ public class Controller {
                     String.format(result, strForceX, strMomentX, strCoefficientX, strForceY, strMomentY, strCoefficientY, strVelocityHead)
             );
 
-            saveAeroCharInDb(alfa, forceX, momentX, forceY, momentY, coefficientX, coefficientY, velocityHead, density, speed, minSpeed);
+            saveAeroCharInDb(orbitChar.getId(), forceX, momentX, forceY, momentY, coefficientX, coefficientY, velocityHead);
+
+            List<AerodynamicCharacteristicsDto> aeroCharNtu = getAllForAeroCharTable();
+            aeroCharTableView.setItems(FXCollections.observableArrayList(aeroCharNtu));
         }
     }
 
     @FXML
     private void calculateTime() {
+        OrbitCharacteristicsTime orbitChar;
         try {
             String cubesatName = cubesatTableView.getSelectionModel().getSelectedItem().getName();
             actualCubesatSize = cubesatSizeRepository.findByName(cubesatName).get();
             String charNtuName = ntuTableView.getSelectionModel().getSelectedItem().getName();
             actualCharacteristicsNtu = characteristicsNtuRepository.findByName(charNtuName).get();
+            double initialOrbit = orbitaTimeTableView.getSelectionModel().getSelectedItem().getInitialOrbit();
+            double finalOrbit = orbitaTimeTableView.getSelectionModel().getSelectedItem().getFinalOrbit();
+            double speed = orbitaTimeTableView.getSelectionModel().getSelectedItem().getSpeed();
+            double alfa = orbitaTimeTableView.getSelectionModel().getSelectedItem().getAlfa();
+            double gamma = orbitaTimeTableView.getSelectionModel().getSelectedItem().getGamma();
+            orbitChar = orbitCharacteristicsTimeRepository.findAllByInitialOrbitAndFinalOrbitAndSpeedAndAlfaAndGamma(initialOrbit, finalOrbit, speed, alfa, gamma).stream().findFirst().get();
+
         } catch (NullPointerException e) {
             timeResultTextArea.setText("Не все поля заполнены");
             return;
         }
-        if (actualCharacteristicsNtu == null || actualCubesatSize == null || actualFlightCharForTime == null) {
+        if (actualCharacteristicsNtu == null || actualCubesatSize == null || orbitChar == null) {
             timeResultTextArea.setText("Не все поля заполнены");
         } else {
             double radius = actualCharacteristicsNtu.getRadius();
             double length = actualCharacteristicsNtu.getLength();
             String formName = actualCharacteristicsNtu.getForm().getFileName();
 
-            double startHeight = startHeightTime * 1000 + EARTH_RADIUS;
-            double endHeight = endHeightTime * 1000 + EARTH_RADIUS;
-            double speed = actualSpeedTime;
-            double theta0 = theta0Time * (Math.PI / 180);
-            double alfa = actualAlfaTime * (Math.PI / 180);
+            double startHeight = orbitChar.getInitialOrbit() * 1000 + EARTH_RADIUS;
+            double endHeight = orbitChar.getFinalOrbit() * 1000 + EARTH_RADIUS;
+            double speed = orbitChar.getSpeed();
+            double theta0 = orbitChar.getGamma() * (Math.PI / 180);
+            double alfa = orbitChar.getAlfa() * (Math.PI / 180);
             double g_r = ACCELERATION_OF_GRAVITY;
             double Omega = VELOCITY_OF_EARTH;
 
@@ -515,15 +612,50 @@ public class Controller {
             String strLandTime = String.valueOf(landTime);
 
             timeResultTextArea.setText(String.format(resultTime, strStartHeight, strEndHeight, strLandTime));
-        }
+            saveTimeCharInDb(orbitChar.getId(), landTime);
 
+            List<TimeCharacteristicsDto> timeCharDto = getAllForTimeCharTable();
+            timeCharTableView.setItems(FXCollections.observableArrayList(timeCharDto));
+        }
     }
 
-    private void saveAeroCharInDb(double alfa, double forceX, double momentX, double forceY, double momentY, double coefficientX, double coefficientY, double velocityHead, double density, double speed, double minSpeed) {
+    @FXML
+    private void deleteAeroChar() {
+        try {
+            int id = aeroCharTableView.getSelectionModel().getSelectedItem().getId();
+            AerodynamicCharacteristics aero = aeroCharRepository.findById(id).get();
+            aeroCharRepository.delete(aero);
+            chosenAeroCharLog.setText("Запись с номером " + id + " успешно удалена");
+
+            List<AerodynamicCharacteristicsDto> aeroCharNtu = getAllForAeroCharTable();
+            aeroCharTableView.setItems(FXCollections.observableArrayList(aeroCharNtu));
+        } catch (Exception e) {
+            chosenAeroCharLog.setText("Запись c номером " + aeroCharTableView.getSelectionModel().getSelectedItem().getId() +
+                                      "не удалена по неизвестной причине");
+        }
+    }
+
+    @FXML
+    private void deleteTimeChar() {
+        try {
+            int id = timeCharTableView.getSelectionModel().getSelectedItem().getId();
+            TimeCharacteristics time = timeCharacteristicsRepository.findById(id).get();
+            timeCharacteristicsRepository.delete(time);
+            chosenTimeCharLog.setText("Запись с номером " + id + " успешно удалена");
+
+            List<TimeCharacteristicsDto> timeCharDto = getAllForTimeCharTable();
+            timeCharTableView.setItems(FXCollections.observableArrayList(timeCharDto));
+        } catch (Exception e) {
+            chosenTimeCharLog.setText("Запись c номером " + timeCharTableView.getSelectionModel().getSelectedItem().getId() +
+                                      "не удалена по неизвестной причине");
+        }
+    }
+
+    private void saveAeroCharInDb(int orbitId, double forceX, double momentX, double forceY, double momentY, double coefficientX, double coefficientY, double velocityHead) {
         AerodynamicCharacteristics aeroChar = new AerodynamicCharacteristics();
-        aeroChar.setAlfa(alfa);
         aeroChar.setCubesatSizeId(actualCubesatSize.getId());
         aeroChar.setNtuId(actualCharacteristicsNtu.getId());
+        aeroChar.setOrbitId(orbitId);
         aeroChar.setForceX(forceX);
         aeroChar.setMomentX(momentX);
         aeroChar.setForceY(forceY);
@@ -531,12 +663,16 @@ public class Controller {
         aeroChar.setCoefficientX(coefficientX);
         aeroChar.setCoefficientY(coefficientY);
         aeroChar.setVelocityHead(velocityHead);
-        aeroChar.setDateOfCalculation(LocalDateTime.now());
-        aeroChar.setDensity(density);
-        aeroChar.setSpeed(speed);
-        aeroChar.setMinSpeed(minSpeed);
-        aeroChar.setHeightKm(actualHeightKm);
-        aerodynamicCharacteristicsRepository.save(aeroChar);
+        aeroCharRepository.save(aeroChar);
+    }
+
+    private void saveTimeCharInDb(int orbitTimeId, double landTime) {
+        TimeCharacteristics timeChar = new TimeCharacteristics();
+        timeChar.setCubesatSizeId(actualCubesatSize.getId());
+        timeChar.setNtuId(actualCharacteristicsNtu.getId());
+        timeChar.setOrbitIdTime(orbitTimeId);
+        timeChar.setLandTime(landTime);
+        timeCharacteristicsRepository.save(timeChar);
     }
 
     private static double convertStringToDouble(String numberString) {
@@ -565,8 +701,20 @@ public class Controller {
         List<MaterialInfoEntity> materialData = materialInfoRepository.findAll();
         materialTableView.setItems(FXCollections.observableArrayList(materialData));
 
-        List<NtuTableDto> ntuData = getAllForTable();
+        List<OrbitCharacteristics> orbitCharacteristics = orbitCharacteristicsRepository.findAll();
+        orbitaTableView.setItems(FXCollections.observableArrayList(orbitCharacteristics));
+
+        List<OrbitCharacteristicsTime> orbitCharacteristicsTime = orbitCharacteristicsTimeRepository.findAll();
+        orbitaTimeTableView.setItems(FXCollections.observableArrayList(orbitCharacteristicsTime));
+
+        List<NtuTableDto> ntuData = getAllForNtuTable();
         ntuTableView.setItems(FXCollections.observableArrayList(ntuData));
+
+        List<AerodynamicCharacteristicsDto> aeroCharNtu = getAllForAeroCharTable();
+        aeroCharTableView.setItems(FXCollections.observableArrayList(aeroCharNtu));
+
+        List<TimeCharacteristicsDto> timeCharDto = getAllForTimeCharTable();
+        timeCharTableView.setItems(FXCollections.observableArrayList(timeCharDto));
     }
 
     private void setupTableColumns() {
@@ -587,15 +735,46 @@ public class Controller {
         materialNtuColumn.setCellValueFactory(new PropertyValueFactory<>("material"));
         densityNtuColumn.setCellValueFactory(new PropertyValueFactory<>("density"));
 
+        orbitColumn.setCellValueFactory(new PropertyValueFactory<>("orbit"));
+        speedColumn.setCellValueFactory(new PropertyValueFactory<>("speed"));
+        alfaColumn.setCellValueFactory(new PropertyValueFactory<>("alfa"));
+
+        initialOrbitColumn.setCellValueFactory(new PropertyValueFactory<>("initialOrbit"));
+        finalOrbitColumn.setCellValueFactory(new PropertyValueFactory<>("finalOrbit"));
+        speedTimeColumn.setCellValueFactory(new PropertyValueFactory<>("speed"));
+        alfaTimeColumn.setCellValueFactory(new PropertyValueFactory<>("alfa"));
+        gammaTimeColumn.setCellValueFactory(new PropertyValueFactory<>("gamma"));
+
         nameMaterialColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         densityMaterialColumn.setCellValueFactory(new PropertyValueFactory<>("density"));
+
+        calculationIdChColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        cubesatColumn.setCellValueFactory(new PropertyValueFactory<>("cubesatName"));
+        ntuColumn.setCellValueFactory(new PropertyValueFactory<>("ntuName"));
+        orbitChColumn.setCellValueFactory(new PropertyValueFactory<>("height"));
+        speedChColumn.setCellValueFactory(new PropertyValueFactory<>("speed"));
+        alfaChColumn.setCellValueFactory(new PropertyValueFactory<>("alfa"));
+        forceXColumn.setCellValueFactory(new PropertyValueFactory<>("forceX"));
+        coefficientXColumn.setCellValueFactory(new PropertyValueFactory<>("coefficientX"));
+        momentXColumn.setCellValueFactory(new PropertyValueFactory<>("momentX"));
+        forceYColumn.setCellValueFactory(new PropertyValueFactory<>("forceY"));
+        coefficientYColumn.setCellValueFactory(new PropertyValueFactory<>("coefficientY"));
+        momentYColumn.setCellValueFactory(new PropertyValueFactory<>("momentY"));
+        velocityHeadColumn.setCellValueFactory(new PropertyValueFactory<>("velocityHead"));
+
+        calculationIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        cubesatTimeColumn.setCellValueFactory(new PropertyValueFactory<>("cubesatName"));
+        ntuTimeColumn.setCellValueFactory(new PropertyValueFactory<>("ntuName"));
+        initOrbitColumn.setCellValueFactory(new PropertyValueFactory<>("initialOrbit"));
+        finOrbitColumn.setCellValueFactory(new PropertyValueFactory<>("finalOrbit"));
+        speedTimeChColumn.setCellValueFactory(new PropertyValueFactory<>("speed"));
+        alfaTimeChColumn.setCellValueFactory(new PropertyValueFactory<>("alfa"));
+        gammaTimeChColumn.setCellValueFactory(new PropertyValueFactory<>("gamma"));
+        landTimeColumn.setCellValueFactory(new PropertyValueFactory<>("landTime"));
     }
 
-    private boolean isNullOrBlank(String str) {
-        return str == null || str.isBlank();
-    }
 
-    public List<NtuTableDto> getAllForTable() {
+    private List<NtuTableDto> getAllForNtuTable() {
         List<Object[]> rawData = formNtuRepository.getAllForTable();
         List<NtuTableDto> dtos = new ArrayList<>();
 
@@ -614,6 +793,53 @@ public class Controller {
         }
         return dtos;
     }
+
+    private List<AerodynamicCharacteristicsDto> getAllForAeroCharTable() {
+        List<Object[]> rawData = aeroCharRepository.getAllForTable();
+        List<AerodynamicCharacteristicsDto> dtos = new ArrayList<>();
+
+        for (Object[] objects : rawData) {
+            AerodynamicCharacteristicsDto dto = new AerodynamicCharacteristicsDto(
+                    (Integer) objects[0],
+                    (String) objects[1],
+                    (String) objects[2],
+                    (Double) objects[3],
+                    (Double) objects[4],
+                    (Double) objects[5],
+                    (Double) objects[6],
+                    (Double) objects[7],
+                    (Double) objects[8],
+                    (Double) objects[9],
+                    (Double) objects[10],
+                    (Double) objects[11],
+                    (Double) objects[12]
+            );
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
+    private List<TimeCharacteristicsDto> getAllForTimeCharTable() {
+        List<Object[]> rowData = timeCharacteristicsRepository.getAllForTable();
+        List<TimeCharacteristicsDto> dtos = new ArrayList<>();
+
+        for (Object[] objects : rowData) {
+            TimeCharacteristicsDto dto = new TimeCharacteristicsDto(
+                    (Integer) objects[0],
+                    (String) objects[1],
+                    (String) objects[2],
+                    (Double) objects[3],
+                    (Double) objects[4],
+                    (Double) objects[5],
+                    (Double) objects[6],
+                    (Double) objects[7],
+                    (Double) objects[8]
+            );
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
 
     private String flightChar = """
              Высота полета: %s  км
@@ -648,5 +874,14 @@ public class Controller {
     private String resultTime = """
             Время спуска с орбиты %s км на орбиту %s км
             составило t = %s часов
+            """;
+
+    private final String cubesatChosen = "Длина - %s м, Ширина - %s м, Высота - %s м";
+    private final String ntuChosen = "Длина - %s м, Радиус - %s м";
+    private final String ntuChosenWithoutLength = "Радиус - %s м";
+    private final String orbitChosen = "Высота - %s км, Скорость - %s м/с, Угол атаки - %s градусов";
+    private final String orbitTimeChosen = """
+            Нач. орбита - %s км, Фин. орбита - %s км, Скорость - %s м/с,
+            Угол атаки - %s градусов, Угол наклона - %s градусов
             """;
 }

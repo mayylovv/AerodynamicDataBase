@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="264.0" prefWidth="600.0" style="-fx-background-color: lightblue;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.controller.NewOrbitController">
+    <Label layoutX="148.0" layoutY="42.0" text="Добавление новых характеристик">
+        <font>
+            <Font name="System Bold" size="18.0" />
+        </font>
+    </Label>
+
+    <Label layoutX="66.0" layoutY="102.0" text="Высота:" />
+    <Label layoutX="66.0" layoutY="132.0" text="Скорость:" />
+    <Label layoutX="66.0" layoutY="162.0" text="Угол атаки:" />
+
+    <TextField fx:id="newOrbit" layoutX="148.0" layoutY="98.0" prefHeight="26.0" prefWidth="338.0" />
+    <TextField fx:id="newSpeed" layoutX="148.0" layoutY="128.0" prefHeight="26.0" prefWidth="338.0" />
+    <TextField fx:id="newAlfa" layoutX="148.0" layoutY="158.0" prefHeight="26.0" prefWidth="338.0" />
+
+    <Label fx:id="newOrbitLog" layoutX="66.0" layoutY="195.0" />
+
+    <Button fx:id="newOrbitSaveButton" layoutX="187.0" layoutY="220.0" mnemonicParsing="false" onAction="#saveNewOrbit" text="Сохранить" />
+    <Button fx:id="cancelButton" layoutX="330.0" layoutY="220.0" mnemonicParsing="false" onAction="#cancelAction" text="Отменить" />
+    <Label layoutX="491.0" layoutY="133.0" text="м/с" />
+    <Label layoutX="491.0" layoutY="163.0" text="градус" />
+
+
+</AnchorPane>

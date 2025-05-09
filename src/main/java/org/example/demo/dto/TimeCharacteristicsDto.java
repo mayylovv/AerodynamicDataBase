@@ -7,15 +7,16 @@ import lombok.experimental.FieldDefaults;
 @Data
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class NtuTableDto {
+public class TimeCharacteristicsDto {
 
     int id;
-    String name;
-    String form;
-    double radius;
-    double length;
-    double thickness;
-    String material;
-    double density;
+    String cubesatName;
+    String ntuName;
+    double initialOrbit;
+    double finalOrbit;
+    double speed;
+    double alfa;
+    double gamma;
+    double landTime;
 
 }

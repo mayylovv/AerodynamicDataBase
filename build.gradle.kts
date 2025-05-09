@@ -31,6 +31,7 @@ dependencies {
 	implementation("org.glassfish.jaxb:jaxb-runtime:4.0.4") // Runtime для JAXB
 	implementation("net.objecthunter:exp4j:0.4.8")
 	implementation("org.apache.commons:commons-math3:3.6.1")
+	implementation ("org.jboss.logging:jboss-logging:3.5.0.Final")
 }
 
 application {

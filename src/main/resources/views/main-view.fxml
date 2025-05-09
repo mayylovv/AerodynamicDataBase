@@ -217,7 +217,6 @@
                 </TableView>
                 <Label fx:id="chosenTimeCharLog" layoutX="633.0" layoutY="333.0" />
                 <Button fx:id="deleteTimeButton" layoutX="21.0" layoutY="333.0" mnemonicParsing="false" onAction="#deleteTimeChar" text="Удалить" />
-                <Button layoutX="118.0" layoutY="333.0" mnemonicParsing="false" text="Сравнить" />
             </Pane>
         </Tab>
     </TabPane>

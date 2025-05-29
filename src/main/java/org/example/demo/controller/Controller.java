@@ -236,7 +236,7 @@ public class Controller {
             NewCubesatController newCubesatController = loader.getController();
 
             Stage stage = new Stage();
-            stage.setTitle("Новый Cubesat");
+            stage.setTitle("Новый аппарат");
             stage.setScene(new Scene(root));
             try {
                 Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png")));
@@ -540,6 +540,8 @@ public class Controller {
             double density = calculationService.getDensity(height);
             System.out.println("density = " + density);
             System.out.println("Плотность " + density);
+            System.out.println(speed);
+            System.out.println(velocityHead);
 
             String strForceX = String.valueOf(forceX);
             String strForceY = String.valueOf(forceY);

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="698.0" prefWidth="1900.0" style="-fx-background-color: lightblue;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.controller.ChartController">
+    <children>
+        <LineChart fx:id="lineChart" layoutX="7.0" layoutY="9.0" prefHeight="850.0" prefWidth="1500.0">
+            <xAxis>
+                <NumberAxis label="Время (часы)" fx:id="xAxis"/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis fx:id="yAxis" label="Высота (км)"  />
+            </yAxis>
+        </LineChart>
+    </children>
+</AnchorPane>

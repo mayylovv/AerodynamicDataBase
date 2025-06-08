@@ -36,4 +36,5 @@ dependencies {
 
 application {
 	mainClass.set("org.example.demo.CubesatNtuApplication")
+//	mainClass.set("org.example.demo.ForGraph")
 }
